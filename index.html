@@ -10,33 +10,61 @@
 <body>
   <div class="app">
     <div class="page-scroll">
-      <header class="hero">
-        <p class="hero-eyebrow">拾光校园 / LOST &amp; FOUND</p>
-        <h1>让每件小物<br>找到回家的路</h1>
-        <p class="hero-description">校园失物与招领信息，集中看、方便找</p>
-        <span class="hero-emblem">
-          <img src="assets/campus-emblem.png" alt="福州大学校徽">
-        </span>
-      </header>
+      <section id="home-view">
+        <header class="hero">
+          <p class="hero-eyebrow">拾光校园 / LOST &amp; FOUND</p>
+          <h1>让每件小物<br>找到回家的路</h1>
+          <p class="hero-description">校园失物与招领信息，集中看、方便找</p>
+          <span class="hero-emblem">
+            <img src="assets/campus-emblem.png" alt="福州大学校徽">
+          </span>
+        </header>
 
-      <main class="content">
-        <div class="section-heading">
-          <h2>最新信息</h2>
-          <span>点击卡片查看详情</span>
-        </div>
-        <div id="item-list" class="item-list"></div>
-        <p class="page-note">
-          初始卡片为演示信息。使用导航栏“搜索”查找物品，使用“发布”填写信息。
-          校徽仅作校园主题展示，不代表官方认证。
-        </p>
-      </main>
+        <main class="content">
+          <div class="section-heading">
+            <h2>最新信息</h2>
+            <span>点击卡片查看详情</span>
+          </div>
+          <div id="item-list" class="item-list"></div>
+          <p class="page-note">
+            初始卡片为演示信息。使用导航栏“搜索”查找物品。
+            校徽仅作校园主题展示，不代表官方认证。
+          </p>
+        </main>
+      </section>
+
+      <section id="search-view" hidden>
+        <main class="content">
+          <div class="section-heading"><h2>搜索物品</h2></div>
+          <div class="search-banner">
+            <strong>从校园里，找回线索</strong>
+          </div>
+
+          <form id="search-form" class="search-panel">
+            <label for="search-input">搜索校园失物招领</label>
+            <div class="search-row">
+              <input id="search-input" type="search"
+                     placeholder="输入物品名称，如校园卡">
+              <button type="submit">搜索</button>
+            </div>
+            <div class="type-filters" aria-label="信息类型筛选">
+              <button type="button" class="is-active" data-type="all" aria-pressed="true">全部</button>
+              <button type="button" data-type="found" aria-pressed="false">招领</button>
+              <button type="button" data-type="lost" aria-pressed="false">寻物</button>
+            </div>
+          </form>
+
+          <p id="search-summary" class="search-summary"></p>
+          <div id="search-results" class="item-list"></div>
+        </main>
+      </section>
     </div>
 
     <nav class="bottom-nav" aria-label="主导航">
-      <button class="nav-item active" type="button" aria-current="page">
+      <button id="home-nav" class="nav-item active" type="button" aria-current="page">
         <span class="nav-icon">⌂</span><span>首页</span>
       </button>
-      <button class="nav-item" type="button" disabled>
+      <button id="search-nav" class="nav-item" type="button">
         <span class="nav-icon">⌕</span><span>搜索</span>
       </button>
       <button class="nav-item" type="button" disabled>

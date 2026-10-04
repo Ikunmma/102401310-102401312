@@ -119,10 +119,104 @@ function createCard(item) {
   return card;
 }
 
+/* 搜索 */
 const items = [...readSavedItems(), ...demoItems]
   .filter(item => item && typeof item === "object")
-  .sort((a, b) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
+  .sort((a, b) =>
+    String(b.createdAt || "").localeCompare(String(a.createdAt || ""))
+  );
 
-document.getElementById("item-list").replaceChildren(
-  ...items.slice(0, 3).map(createCard)
-);
+function filterItems(source, keyword, type) {
+  const query = keyword.trim().toLocaleLowerCase();
+
+  return source.filter(item => {
+    const typeMatches = type === "all" || item.type === type;
+    const searchableText = [
+      item.name, item.category, item.description, item.location
+    ].map(value => String(value || "")).join(" ").toLocaleLowerCase();
+
+    return typeMatches && searchableText.includes(query);
+  });
+}
+
+window.ShiguangSearch = { filterItems };
+
+const homeList = document.getElementById("item-list");
+const searchList = document.getElementById("search-results");
+const summary = document.getElementById("search-summary");
+const searchInput = document.getElementById("search-input");
+const homeView = document.getElementById("home-view");
+const searchView = document.getElementById("search-view");
+const homeNav = document.getElementById("home-nav");
+const searchNav = document.getElementById("search-nav");
+
+let keyword = "";
+let selectedType = "all";
+
+function renderHome() {
+  homeList.replaceChildren(...items.slice(0, 3).map(createCard));
+}
+
+function renderSearch() {
+  const results = filterItems(items, keyword, selectedType);
+
+  if (results.length === 0) {
+    searchList.replaceChildren(
+      makeElement("p", "empty-result", "没有找到相关信息，请更换关键词或筛选条件。")
+    );
+  } else {
+    searchList.replaceChildren(...results.map(createCard));
+  }
+
+  summary.textContent = keyword || selectedType !== "all"
+    ? `找到 ${results.length} 条信息`
+    : `全部信息：${results.length} 条`;
+}
+
+function showView(view) {
+  const searching = view === "search";
+  homeView.hidden = searching;
+  searchView.hidden = !searching;
+
+  homeNav.classList.toggle("active", !searching);
+  searchNav.classList.toggle("active", searching);
+
+  if (searching) {
+    homeNav.removeAttribute("aria-current");
+    searchNav.setAttribute("aria-current", "page");
+    searchInput.focus();
+  } else {
+    searchNav.removeAttribute("aria-current");
+    homeNav.setAttribute("aria-current", "page");
+  }
+
+  document.querySelector(".page-scroll").scrollTop = 0;
+  window.scrollTo(0, 0);
+}
+
+document.getElementById("search-form").addEventListener("submit", event => {
+  event.preventDefault();
+  keyword = searchInput.value.trim();
+  renderSearch();
+});
+
+document.querySelectorAll(".type-filters button").forEach(button => {
+  button.addEventListener("click", () => {
+    selectedType = button.dataset.type;
+
+    document.querySelectorAll(".type-filters button").forEach(other => {
+      const active = other === button;
+      other.classList.toggle("is-active", active);
+      other.setAttribute("aria-pressed", String(active));
+    });
+
+    renderSearch();
+  });
+});
+
+homeNav.addEventListener("click", () => showView("home"));
+searchNav.addEventListener("click", () => showView("search"));
+
+renderHome();
+renderSearch();
+showView("home");
