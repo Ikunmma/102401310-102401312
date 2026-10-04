@@ -54,21 +54,31 @@ function makeElement(tag, className, text) {
   return element;
 }
 
-const dialog = document.getElementById("detail-dialog");
 const contactButton = document.getElementById("reveal-contact");
 const contactText = document.getElementById("detail-contact");
 
 function openDetail(item) {
-  document.getElementById("detail-title").textContent = item.name;
+  const isLost = item.type === "lost";
+
+  document.getElementById("detail-kind").textContent =
+    isLost ? "寻物启事" : "招领信息";
+  document.getElementById("detail-kind").className =
+    `detail-kind ${isLost ? "lost" : "found"}`;
+  document.getElementById("detail-status").textContent = statusText(item);
+  document.getElementById("detail-title").textContent =
+    item.name || "未命名物品";
+  document.getElementById("detail-published").textContent =
+    `发布于 ${String(item.createdAt || "").replace("T", " ") || "时间未填写"}`;
+
   const fields = document.getElementById("detail-fields");
   fields.replaceChildren();
 
   const rows = [
-    ["分类", item.category],
-    ["时间", String(item.eventTime || "").replace("T", " ")],
-    ["地点", item.location],
-    ["特征", item.description],
-    ["状态", statusText(item)]
+    ["物品分类", item.category],
+    [isLost ? "丢失时间" : "拾到时间",
+      String(item.eventTime || "").replace("T", " ")],
+    [isLost ? "丢失地点" : "拾到地点", item.location],
+    ["物品特征", item.description]
   ];
 
   for (const [label, value] of rows) {
@@ -80,10 +90,12 @@ function openDetail(item) {
     fields.append(row);
   }
 
-  contactText.textContent = `联系途径：${item.contact || "未提供"}`;
+  contactText.textContent = `联系方式：${item.contact || "未提供"}`;
   contactText.hidden = true;
   contactButton.hidden = false;
-  dialog.showModal();
+
+  previousView = searchView.hidden ? "home" : "search";
+  showView("detail");
 }
 
 contactButton.addEventListener("click", () => {
@@ -147,11 +159,13 @@ const summary = document.getElementById("search-summary");
 const searchInput = document.getElementById("search-input");
 const homeView = document.getElementById("home-view");
 const searchView = document.getElementById("search-view");
+const detailView = document.getElementById("detail-view");
 const homeNav = document.getElementById("home-nav");
 const searchNav = document.getElementById("search-nav");
 
 let keyword = "";
 let selectedType = "all";
+let previousView = "home";
 
 function renderHome() {
   homeList.replaceChildren(...items.slice(0, 3).map(createCard));
@@ -174,21 +188,20 @@ function renderSearch() {
 }
 
 function showView(view) {
+  const atHome = view === "home";
   const searching = view === "search";
-  homeView.hidden = searching;
+
+  homeView.hidden = !atHome;
   searchView.hidden = !searching;
+  detailView.hidden = view !== "detail";
 
-  homeNav.classList.toggle("active", !searching);
+  homeNav.classList.toggle("active", atHome);
   searchNav.classList.toggle("active", searching);
+  homeNav.removeAttribute("aria-current");
+  searchNav.removeAttribute("aria-current");
 
-  if (searching) {
-    homeNav.removeAttribute("aria-current");
-    searchNav.setAttribute("aria-current", "page");
-    searchInput.focus();
-  } else {
-    searchNav.removeAttribute("aria-current");
-    homeNav.setAttribute("aria-current", "page");
-  }
+  if (atHome) homeNav.setAttribute("aria-current", "page");
+  if (searching) searchNav.setAttribute("aria-current", "page");
 
   document.querySelector(".page-scroll").scrollTop = 0;
   window.scrollTo(0, 0);
@@ -214,6 +227,9 @@ document.querySelectorAll(".type-filters button").forEach(button => {
   });
 });
 
+document.getElementById("detail-back").addEventListener("click", () => {
+  showView(previousView);
+});
 homeNav.addEventListener("click", () => showView("home"));
 searchNav.addEventListener("click", () => showView("search"));
 
