@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>拾光校园｜校园失物招领</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/home.js" defer></script>
+</head>
+<body>
+  <div class="app">
+    <div class="page-scroll">
+      <header class="hero">
+        <p class="hero-eyebrow">拾光校园 / LOST &amp; FOUND</p>
+        <h1>让每件小物<br>找到回家的路</h1>
+        <p class="hero-description">校园失物与招领信息，集中看、方便找</p>
+        <span class="hero-emblem">
+          <img src="assets/campus-emblem.png" alt="福州大学校徽">
+        </span>
+      </header>
+
+      <main class="content">
+        <div class="section-heading">
+          <h2>最新信息</h2>
+          <span>点击卡片查看详情</span>
+        </div>
+        <div id="item-list" class="item-list"></div>
+        <p class="page-note">
+          初始卡片为演示信息。使用导航栏“搜索”查找物品，使用“发布”填写信息。
+          校徽仅作校园主题展示，不代表官方认证。
+        </p>
+      </main>
+    </div>
+
+    <nav class="bottom-nav" aria-label="主导航">
+      <button class="nav-item active" type="button" aria-current="page">
+        <span class="nav-icon">⌂</span><span>首页</span>
+      </button>
+      <button class="nav-item" type="button" disabled>
+        <span class="nav-icon">⌕</span><span>搜索</span>
+      </button>
+      <button class="nav-item" type="button" disabled>
+        <span class="nav-icon">＋</span><span>发布</span>
+      </button>
+      <button class="nav-item" type="button" disabled>
+        <span class="nav-icon">○</span><span>我的</span>
+      </button>
+    </nav>
+  </div>
+
+  <dialog id="detail-dialog" class="detail-dialog">
+    <form method="dialog">
+      <button class="back-button" type="submit">‹ 返回首页</button>
+    </form>
+    <h2 id="detail-title"></h2>
+    <div id="detail-fields" class="detail-fields"></div>
+    <button id="reveal-contact" class="contact-button" type="button">
+      查看联系方式
+    </button>
+    <p id="detail-contact" class="contact-text" hidden></p>
+  </dialog>
+</body>
+</html>
