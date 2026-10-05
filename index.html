@@ -175,29 +175,31 @@
             ‹ 返回上一页
           </button>
 
+          <div class="detail-layout">
+          <section class="detail-panel" aria-labelledby="detail-title">
           <header class="detail-header">
             <div class="detail-badges">
               <span id="detail-kind" class="detail-kind"></span>
               <span id="detail-status" class="detail-status"></span>
+              <span id="detail-category" class="detail-category"></span>
             </div>
             <h1 id="detail-title"></h1>
             <p id="detail-published" class="detail-published"></p>
           </header>
 
-          <div class="detail-layout">
-            <section class="detail-panel" aria-labelledby="detail-info-heading">
-              <h2 id="detail-info-heading">物品信息</h2>
+              <div class="detail-description">
+                <h2>外观特征</h2>
+                <p id="detail-description"></p>
+              </div>
               <div id="detail-fields" class="detail-fields"></div>
             </section>
 
             <aside class="contact-panel">
               <h2>联系发布者</h2>
-              <p>如果这件物品与你有关，请先核对特征或准备归属凭证，再约定交接方式。</p>
               <button id="reveal-contact" class="contact-button" type="button">
                 查看联系方式
               </button>
               <p id="detail-contact" class="contact-text" hidden></p>
-              <p class="contact-note">请在安全、方便的校园公共地点交接。</p>
             </aside>
           </div>
         </main>

@@ -78,6 +78,8 @@ function openDetail(item) {
   document.getElementById("detail-status").textContent = statusText(item);
   document.getElementById("detail-title").textContent =
     item.name || "未命名物品";
+  document.getElementById("detail-category").textContent = `物品分类：${item.category || "其他物品"}`;
+  document.getElementById("detail-description").textContent = item.description || "暂未提供外观特征";
   document.getElementById("detail-published").textContent =
     `发布于 ${displayPublishedTime(item.createdAt)}`;
 
@@ -85,15 +87,14 @@ function openDetail(item) {
   fields.replaceChildren();
 
   const rows = [
-    ["物品分类", item.category],
-    [isLost ? "丢失时间" : "拾到时间",
-      String(item.eventTime || "").replace("T", " ")],
-    [isLost ? "丢失地点" : "拾到地点", item.location],
-    ["物品特征", item.description]
+    [isLost ? "丢失地点" : "拾取地点", item.location],
+    [isLost ? "丢失时间" : "拾取时间",
+      String(item.eventTime || "").replace("T", " ")]
   ];
 
-  for (const [label, value] of rows) {
+  for (const [index, [label, value]] of rows.entries()) {
     const row = document.createElement("div");
+    row.className = `detail-field${index < 2 ? " is-primary" : " is-wide"}`;
     row.append(
       makeElement("span", "", label),
       makeElement("strong", "", String(value || "未填写"))
@@ -125,18 +126,12 @@ function createCard(item) {
       "span",
       `card-type ${item.type === "lost" ? "lost" : "found"}`,
       `${item.type === "lost" ? "寻物" : "招领"} · ${statusText(item)}`
-    ),
-    makeElement("span", "card-more", "查看详情 ›")
+    )
   );
 
   card.append(
     top,
     makeElement("span", "card-name", item.name || "未命名物品"),
-    makeElement(
-      "span",
-      "card-description",
-      item.description || "暂无详细描述"
-    ),
     makeElement(
       "span",
       "card-meta",
