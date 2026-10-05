@@ -448,11 +448,36 @@ publishForm.addEventListener("submit", event => {
   showView("publish-success");
 });
 
+let mineStatus = "all";
+
+function setMineStatus(status) {
+  mineStatus = status;
+  document.querySelectorAll("[data-mine-status]").forEach(button => {
+    const active = button.dataset.mineStatus === status;
+    button.classList.toggle("is-active", active);
+    button.setAttribute("aria-pressed", String(active));
+  });
+  document.getElementById("mine-feedback").hidden = true;
+  renderMine();
+}
+
+document.querySelectorAll("[data-mine-status]").forEach(button => {
+  button.addEventListener("click", () => setMineStatus(button.dataset.mineStatus));
+});
+
 function renderMine() {
   let ownerId;
   try { ownerId = localStorage.getItem(OWNER_KEY); } catch { /* 显示空状态 */ }
   const ownItems = ownerId ? items.filter(item => item.ownerId === ownerId) : [];
-  document.getElementById("mine-count").textContent = `${ownItems.length} 条`;
+  const resolvedCount = ownItems.filter(item => item.status === "resolved").length;
+  document.getElementById("mine-all-count").textContent = ownItems.length;
+  document.getElementById("mine-active-count").textContent = ownItems.length - resolvedCount;
+  document.getElementById("mine-resolved-count").textContent = resolvedCount;
+  const visibleItems = ownItems.filter(item => mineStatus === "all" ||
+    (mineStatus === "resolved" ? item.status === "resolved" : item.status !== "resolved"));
+  document.getElementById("mine-count").textContent = mineStatus === "all"
+    ? `${ownItems.length} 条`
+    : `${visibleItems.length} 条 / 共 ${ownItems.length} 条`;
   const list = document.getElementById("mine-list");
   if (!ownItems.length) {
     const empty = makeElement("div", "mine-empty", "");
@@ -464,7 +489,18 @@ function renderMine() {
     list.replaceChildren(empty);
     return;
   }
-  list.replaceChildren(...ownItems.map(item => {
+  if (!visibleItems.length) {
+    const empty = makeElement("div", "mine-empty", "");
+    const reset = makeElement("button", "empty-reset", "查看全部发布");
+    reset.type = "button";
+    reset.addEventListener("click", () => setMineStatus("all"));
+    empty.append(
+      makeElement("h3", "", mineStatus === "resolved" ? "暂无已完成的发布" : "暂无处理中的发布"),
+      makeElement("p", "", "可以切换状态筛选，查看其他发布记录。"), reset);
+    list.replaceChildren(empty);
+    return;
+  }
+  list.replaceChildren(...visibleItems.map(item => {
     const entry = makeElement("article", "mine-entry", "");
     entry.append(createCard(item));
     const actions = makeElement("div", "mine-actions", "");

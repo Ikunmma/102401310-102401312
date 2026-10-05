@@ -162,9 +162,14 @@
         <main class="content">
           <button id="mine-back" class="detail-back" type="button">‹ 返回首页</button>
           <div class="section-heading"><h2>我的发布</h2></div>
+          <div class="mine-filters" role="group" aria-label="发布状态筛选">
+            <button type="button" class="is-active" data-mine-status="all" aria-pressed="true">全部 <span id="mine-all-count">0</span></button>
+            <button type="button" data-mine-status="active" aria-pressed="false">处理中 <span id="mine-active-count">0</span></button>
+            <button type="button" data-mine-status="resolved" aria-pressed="false">已完成 <span id="mine-resolved-count">0</span></button>
+          </div>
           <div class="section-heading mine-heading">
             <h3>我发布的信息</h3>
-            <span id="mine-count">0 条</span>
+            <span id="mine-count" aria-live="polite">0 条</span>
           </div>
           <p id="mine-feedback" class="mine-feedback" role="status" tabindex="-1" hidden></p>
           <div id="mine-list" class="item-list"></div>

@@ -507,6 +507,13 @@ button { font: inherit; }
 .publish-success p { color: var(--muted); font-size: 14px; line-height: 1.8; }
 .secondary-button { width: 100%; margin-top: 12px; padding: 14px 18px; border: 0; border-radius: 12px; background: #e1f2ec; color: var(--brand); font: inherit; font-weight: 700; cursor: pointer; }
 .mine-heading { margin-top: 26px; }
+.mine-filters { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+.mine-filters button { display: flex; align-items: center; gap: 10px; padding: 11px 18px; border: 1px solid var(--line); border-radius: 12px; background: white; color: var(--muted); cursor: pointer; }
+.mine-filters button span { min-width: 24px; padding: 2px 7px; border-radius: 999px; background: #f0f5f3; font-size: 12px; }
+.mine-filters button.is-active { border-color: var(--brand); background: #e5f4f0; color: var(--brand); font-weight: 700; }
+.mine-filters button.is-active span { background: #cce9df; }
+.mine-filters button:hover { border-color: var(--brand); }
+.mine-filters button:focus-visible { outline: 2px solid var(--brand); outline-offset: 3px; }
 .mine-heading h3 { margin: 0; font-size: 18px; }
 .mine-entry { min-width: 0; }
 .mine-entry .item-card { min-height: 150px; }
