@@ -345,13 +345,74 @@ publishForm.addEventListener("submit", event => {
   showView("publish-success");
 });
 
-function openMine() {
+function renderMine() {
   let ownerId;
   try { ownerId = localStorage.getItem(OWNER_KEY); } catch { /* 显示空状态 */ }
   const ownItems = ownerId ? items.filter(item => item.ownerId === ownerId) : [];
-  document.getElementById("mine-list").replaceChildren(...(ownItems.length
-    ? ownItems.map(createCard)
-    : [makeElement("p", "empty-result", "暂无发布记录，点击发布分享寻物或招领信息。") ]));
+  document.getElementById("mine-count").textContent = `${ownItems.length} 条`;
+  const list = document.getElementById("mine-list");
+  if (!ownItems.length) {
+    const empty = makeElement("div", "mine-empty", "");
+    const icon = makeElement("span", "mine-empty-icon", "○");
+    icon.setAttribute("aria-hidden", "true");
+    empty.append(icon,
+      makeElement("h3", "", "还没有发布记录"),
+      makeElement("p", "", "发布寻物或招领信息后，就能在这里管理状态。"));
+    list.replaceChildren(empty);
+    return;
+  }
+  list.replaceChildren(...ownItems.map(item => {
+    const entry = makeElement("article", "mine-entry", "");
+    entry.append(createCard(item));
+    if (item.status !== "resolved") {
+      const action = makeElement("button", "resolve-button", item.type === "lost" ? "标记已找到" : "标记已归还");
+      action.type = "button";
+      action.setAttribute("aria-label", `${action.textContent}：${item.name || "未命名物品"}`);
+      action.addEventListener("click", () => resolveItem(item.id));
+      entry.append(action);
+    }
+    return entry;
+  }));
+}
+
+function resolveItem(id) {
+  const feedback = document.getElementById("mine-feedback");
+  let updated;
+  try {
+    const ownerId = localStorage.getItem(OWNER_KEY);
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    if (!Array.isArray(saved)) throw new Error("Invalid storage");
+    const record = saved.find(item => item && item.id === id && item.ownerId === ownerId);
+    if (!ownerId || !record) {
+      feedback.textContent = "未找到你的发布记录，请刷新页面后重试。";
+      feedback.className = "mine-feedback is-error";
+      feedback.hidden = false;
+      feedback.focus();
+      return;
+    }
+    updated = { ...record, status: "resolved" };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(saved.map(item => item === record ? updated : item)));
+  } catch {
+    feedback.textContent = "状态保存失败，请检查浏览器是否允许本地存储后重试。";
+    feedback.className = "mine-feedback is-error";
+    feedback.hidden = false;
+    feedback.focus();
+    return;
+  }
+  const index = items.findIndex(item => item.id === id && item.ownerId === updated.ownerId);
+  if (index !== -1) items[index] = updated;
+  renderHome();
+  renderSearch();
+  renderMine();
+  feedback.textContent = `“${updated.name || "未命名物品"}”已标记为${statusText(updated)}。`;
+  feedback.className = "mine-feedback";
+  feedback.hidden = false;
+  feedback.focus();
+}
+
+function openMine() {
+  document.getElementById("mine-feedback").hidden = true;
+  renderMine();
   showView("mine");
 }
 
@@ -360,6 +421,7 @@ mineNav.addEventListener("click", openMine);
 document.getElementById("publish-back").addEventListener("click", () => showView("home"));
 document.getElementById("success-home").addEventListener("click", () => showView("home"));
 document.getElementById("success-mine").addEventListener("click", openMine);
+document.getElementById("mine-back").addEventListener("click", () => showView("home"));
 
 renderHome();
 renderSearch();
