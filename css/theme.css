@@ -1,0 +1,118 @@
+/* 全站视觉规范：浅色背景、清楚的大字、统一控件。 */
+:root {
+  --bg: #f5f7f8;
+  --ink: #203740;
+  --muted: #576972;
+  --line: #e2e8eb;
+  --surface-radius: 20px;
+  --surface-shadow: 0 10px 30px rgba(31, 52, 60, .045);
+}
+body { background: var(--bg); font-size: 18px; line-height: 1.6; }
+#home-view { background: var(--bg); }
+.content { padding-top: 36px; padding-bottom: 56px; }
+.section-heading { margin-bottom: 24px; gap: 16px; }
+.section-heading h2, #home-view .section-heading h2,
+.search-results-heading h2 { font-size: 32px; line-height: 1.4; }
+.section-heading span, .search-summary { font-size: 18px; color: var(--muted); }
+.detail-back { font-size: 18px; margin-bottom: 24px; }
+.page-note { font-size: 16px; }
+.item-card, .shortcut-card, .search-panel, .publish-form,
+.publish-success, .empty-result, .mine-empty {
+  border: 1px solid var(--line);
+  border-radius: var(--surface-radius);
+  background-color: white;
+  box-shadow: var(--surface-shadow);
+}
+.item-card:hover, .shortcut-card:hover { transform: translateY(-2px); }
+.search-intro p { font-size: 20px; }
+.search-row input { font-size: 20px; color: var(--ink); }
+.search-panel { padding: 24px; }
+.search-row > button, .contact-button, .secondary-button,
+.resolve-button, .edit-button, .empty-reset {
+  min-height: 56px;
+  border-radius: 12px;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.contact-button, .search-row > button { background: var(--brand); color: white; }
+.secondary-button, .edit-button, .empty-reset {
+  border: 1px solid var(--line);
+  background: white;
+  color: var(--ink);
+}
+.secondary-button:hover, .edit-button:hover, .empty-reset:hover {
+  border-color: var(--brand); background: #f0f7f5; color: var(--brand);
+}
+.type-filters button, .mine-filters button {
+  min-height: 48px; padding: 10px 22px; border-radius: 12px; font-size: 18px;
+}
+.type-filters button.is-active, .mine-filters button.is-active {
+  border-color: var(--brand); background: #e5f4f0; color: var(--brand);
+}
+.empty-result h3, .mine-empty h3 { font-size: 26px; }
+.empty-result p, .mine-empty p { font-size: 18px; }
+.publish-content { max-width: 1060px; }
+.publish-form { padding: 36px 40px; }
+.publish-type { margin-bottom: 32px; }
+.publish-type legend { font-size: 22px; margin-bottom: 18px; }
+.publish-types { gap: 16px; }
+.publish-types span { padding: 16px; font-size: 22px; }
+.publish-types input:checked + span {
+  background: #e5f4f0; border-color: var(--brand); color: var(--brand);
+}
+.publish-fields { gap: 26px 24px; }
+.publish-field > label { font-size: 20px; margin-bottom: 10px; }
+.publish-field > label > span:last-child { margin-left: 5px; }
+.publish-field input, .publish-field textarea {
+  font-size: 20px; padding: 15px 18px; line-height: 1.6; background: #fff;
+}
+.publish-field input { min-height: 60px; }
+.publish-field textarea { min-height: 128px; }
+.field-error { font-size: 18px; }
+.publish-note {
+  padding: 20px 0 0; border-top: 1px solid var(--line); border-radius: 0;
+  background: transparent; color: var(--muted); font-size: 18px;
+}
+.publish-form > .contact-button { margin-top: 28px; }
+.publish-success { padding: 56px 36px; }
+.success-mark {
+  display: grid; place-items: center; width: 80px; height: 80px; margin: 0 auto 24px;
+  border-radius: 50%; background: #e5f4f0; color: var(--brand); font-size: 42px;
+}
+.publish-success h2 { font-size: 34px; margin: 0 0 16px; }
+.publish-success p { font-size: 20px; margin: 0; }
+#publish-success-view .publish-content { max-width: 820px; padding-top: 64px; }
+.mine-filters { gap: 12px; margin: 0 0 32px; }
+.mine-filters button span { font-size: 16px; min-width: 28px; }
+.mine-heading h3 { font-size: 24px; }
+.mine-actions { gap: 12px; margin-top: 12px; }
+.mine-actions .resolve-button, .mine-actions .edit-button { font-size: 18px; padding: 14px 10px; }
+.resolve-button { background: #e5f4f0; color: var(--brand); }
+.mine-empty { padding: 56px 24px; }
+.mine-feedback { font-size: 18px; padding: 18px 22px; }
+button:focus-visible { outline: 3px solid var(--brand); outline-offset: 3px; }
+@media (min-width: 768px) {
+  .nav-item { font-size: 20px; min-width: 110px; }
+  .nav-item.active { background: #f0f7f5; box-shadow: inset 0 -3px var(--brand); }
+  .bottom-nav { box-shadow: 0 2px 12px rgba(31, 52, 60, .04); }
+  .brand-name { font-size: 20px; }
+}
+@media (max-width: 767px) {
+  .content { padding: 24px 20px 36px; }
+  .section-heading h2, #home-view .section-heading h2,
+  .search-results-heading h2 { font-size: 28px; }
+  .publish-form { padding: 24px 20px; }
+  .publish-fields { grid-template-columns: 1fr; gap: 24px; }
+  .publish-types span { font-size: 20px; }
+  .search-intro p { font-size: 18px; }
+  .search-panel { padding: 18px; }
+  .search-row input { font-size: 18px; padding: 12px; }
+  .search-row > button { padding: 0 18px; }
+  .publish-success { padding: 36px 24px; }
+  #publish-success-view .publish-content { padding-top: 36px; }
+  .search-results-heading { flex-wrap: wrap; gap: 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; }
+}
