@@ -194,16 +194,28 @@ function renderSearch() {
   const results = filterItems(items, keyword, selectedType);
 
   if (results.length === 0) {
-    searchList.replaceChildren(
-      makeElement("p", "empty-result", "没有找到相关信息，请更换关键词或筛选条件。")
+    const empty = makeElement("div", "empty-result", "");
+    const resetButton = makeElement("button", "empty-reset", "清除条件，查看全部");
+    resetButton.type = "button";
+    resetButton.addEventListener("click", () => {
+      keyword = "";
+      searchInput.value = "";
+      document.querySelector('.type-filters button[data-type="all"]').click();
+      searchInput.focus();
+    });
+    empty.append(
+      makeElement("h3", "", "暂时没有找到相关信息"),
+      makeElement("p", "", "试试其他物品名称或地点，也可以清除筛选条件。"),
+      resetButton
     );
+    searchList.replaceChildren(empty);
   } else {
     searchList.replaceChildren(...results.map(createCard));
   }
 
   summary.textContent = keyword || selectedType !== "all"
-    ? `找到 ${results.length} 条信息`
-    : `全部信息：${results.length} 条`;
+    ? `符合条件的 ${results.length} 条信息`
+    : `共 ${results.length} 条信息`;
 }
 
 function showView(view) {

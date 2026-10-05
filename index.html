@@ -65,27 +65,33 @@
       </section>
 
       <section id="search-view" hidden>
-        <main class="content">
-          <div class="section-heading"><h2>搜索物品</h2></div>
-          <div class="search-banner">
-            <strong>从校园里，找回线索</strong>
-          </div>
+        <main class="content search-content">
+          <header class="search-intro">
+            <h1>搜索失物招领</h1>
+            <p>输入物品名称、特征或地点，快速找到相关信息。</p>
+          </header>
 
           <form id="search-form" class="search-panel">
-            <label for="search-input">搜索校园失物招领</label>
+            <label class="visually-hidden" for="search-input">搜索物品</label>
             <div class="search-row">
               <input id="search-input" type="search"
-                     placeholder="输入物品名称，如校园卡">
+                     placeholder="搜索校园卡、雨伞、图书馆……">
               <button type="submit">搜索</button>
             </div>
-            <div class="type-filters" aria-label="信息类型筛选">
-              <button type="button" class="is-active" data-type="all" aria-pressed="true">全部</button>
-              <button type="button" data-type="found" aria-pressed="false">招领</button>
-              <button type="button" data-type="lost" aria-pressed="false">寻物</button>
+            <div class="filter-row">
+              <span class="filter-label visually-hidden">信息类型</span>
+              <div class="type-filters" role="group" aria-label="信息类型筛选">
+                <button type="button" class="is-active" data-type="all" aria-pressed="true">全部</button>
+                <button type="button" data-type="found" aria-pressed="false">招领</button>
+                <button type="button" data-type="lost" aria-pressed="false">寻物</button>
+              </div>
             </div>
           </form>
 
-          <p id="search-summary" class="search-summary"></p>
+          <div class="search-results-heading">
+            <h2>搜索结果</h2>
+            <p id="search-summary" class="search-summary" aria-live="polite"></p>
+          </div>
           <div id="search-results" class="item-list"></div>
         </main>
       </section>
