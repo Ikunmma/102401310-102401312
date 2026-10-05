@@ -44,7 +44,18 @@ function statusText(item) {
 
 function displayTime(value) {
   const text = String(value || "").replace("T", " ");
-  return text.length >= 16 ? text.slice(5, 16) : text;
+  return /^\d{4}-\d{2}-\d{2}/.test(text) ? text.slice(5, 16) : text;
+}
+
+function displayPublishedTime(value) {
+  const text = String(value || "");
+  if (/Z$/.test(text)) {
+    const date = new Date(text);
+    if (!Number.isNaN(date.getTime())) {
+      return date.toLocaleString("zh-CN", { hour12: false });
+    }
+  }
+  return text.replace("T", " ") || "时间未填写";
 }
 
 function makeElement(tag, className, text) {
@@ -68,7 +79,7 @@ function openDetail(item) {
   document.getElementById("detail-title").textContent =
     item.name || "未命名物品";
   document.getElementById("detail-published").textContent =
-    `发布于 ${String(item.createdAt || "").replace("T", " ") || "时间未填写"}`;
+    `发布于 ${displayPublishedTime(item.createdAt)}`;
 
   const fields = document.getElementById("detail-fields");
   fields.replaceChildren();
@@ -94,7 +105,7 @@ function openDetail(item) {
   contactText.hidden = true;
   contactButton.hidden = false;
 
-  previousView = searchView.hidden ? "home" : "search";
+  previousView = currentView;
   showView("detail");
 }
 
@@ -167,10 +178,13 @@ const searchView = document.getElementById("search-view");
 const detailView = document.getElementById("detail-view");
 const homeNav = document.getElementById("home-nav");
 const searchNav = document.getElementById("search-nav");
+const publishNav = document.getElementById("publish-nav");
+const mineNav = document.getElementById("mine-nav");
 
 let keyword = "";
 let selectedType = "all";
 let previousView = "home";
+let currentView = "home";
 
 function renderHome() {
   homeList.replaceChildren(...items.slice(0, 3).map(createCard));
@@ -193,20 +207,16 @@ function renderSearch() {
 }
 
 function showView(view) {
-  const atHome = view === "home";
-  const searching = view === "search";
-
-  homeView.hidden = !atHome;
-  searchView.hidden = !searching;
-  detailView.hidden = view !== "detail";
-
-  homeNav.classList.toggle("active", atHome);
-  searchNav.classList.toggle("active", searching);
-  homeNav.removeAttribute("aria-current");
-  searchNav.removeAttribute("aria-current");
-
-  if (atHome) homeNav.setAttribute("aria-current", "page");
-  if (searching) searchNav.setAttribute("aria-current", "page");
+  currentView = view;
+  for (const name of ["home", "search", "detail", "publish", "publish-success", "mine"]) {
+    document.getElementById(`${name}-view`).hidden = name !== view;
+  }
+  const navView = view === "publish-success" ? "publish" : view;
+  for (const [name, button] of [["home", homeNav], ["search", searchNav], ["publish", publishNav], ["mine", mineNav]]) {
+    button.classList.toggle("active", name === navView);
+    button.removeAttribute("aria-current");
+    if (name === navView) button.setAttribute("aria-current", "page");
+  }
 
   document.querySelector(".page-scroll").scrollTop = 0;
   window.scrollTo(0, 0);
@@ -254,6 +264,102 @@ document.getElementById("detail-back").addEventListener("click", () => {
 });
 homeNav.addEventListener("click", () => showView("home"));
 searchNav.addEventListener("click", () => showView("search"));
+
+/* 发布：仅在保存成功后更新列表和展示成功页。 */
+const OWNER_KEY = "shiguang_owner_v1";
+const publishForm = document.getElementById("publish-form");
+const publishError = document.getElementById("publish-error");
+const publishFields = {
+  name: "物品名称", category: "物品分类", eventTime: "时间",
+  location: "地点", description: "外观特征", contact: "联系方式"
+};
+let publishType = "lost";
+
+function uniqueId() {
+  return window.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+}
+
+function setFieldError(name, message) {
+  const input = document.getElementById(`publish-${name}`);
+  const error = document.getElementById(`error-${name}`);
+  error.textContent = message;
+  error.hidden = !message;
+  if (message) input.setAttribute("aria-invalid", "true");
+  else input.removeAttribute("aria-invalid");
+}
+
+document.querySelectorAll('input[name="publish-type"]').forEach(input => {
+  input.addEventListener("change", () => {
+    publishType = input.value;
+    document.getElementById("publish-time-label").textContent = publishType === "lost" ? "丢失时间" : "拾取时间";
+    document.getElementById("publish-location-label").textContent = publishType === "lost" ? "丢失地点" : "拾取地点";
+  });
+});
+
+Object.keys(publishFields).forEach(name => {
+  document.getElementById(`publish-${name}`).addEventListener("input", () => {
+    setFieldError(name, "");
+  });
+});
+
+publishForm.addEventListener("submit", event => {
+  event.preventDefault();
+  publishError.hidden = true;
+  const values = {};
+  let firstInvalid;
+  for (const [name, label] of Object.entries(publishFields)) {
+    const input = document.getElementById(`publish-${name}`);
+    values[name] = input.value.trim();
+    const message = !values[name] ? `请填写${label}` :
+      values[name].length > input.maxLength ? `${label}最多填写${input.maxLength}个字符` : "";
+    setFieldError(name, message);
+    if (message && !firstInvalid) firstInvalid = input;
+  }
+  if (firstInvalid) {
+    firstInvalid.focus();
+    return;
+  }
+  let item;
+  try {
+    let ownerId = localStorage.getItem(OWNER_KEY);
+    if (!ownerId) {
+      ownerId = uniqueId();
+      localStorage.setItem(OWNER_KEY, ownerId);
+    }
+    item = { ...values, id: uniqueId(), type: publishType, status: "active", ownerId, createdAt: new Date().toISOString() };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify([...readSavedItems(), item]));
+  } catch {
+    publishError.textContent = "保存失败，请检查浏览器是否允许本地存储后重试。填写的内容已保留。";
+    publishError.hidden = false;
+    return;
+  }
+  items.unshift(item);
+  renderHome();
+  renderSearch();
+  document.getElementById("publish-success-message").textContent =
+    `你的${publishType === "lost" ? "寻物" : "招领"}信息已经加入校园信息列表。`;
+  publishForm.reset();
+  publishType = "lost";
+  document.getElementById("publish-time-label").textContent = "丢失时间";
+  document.getElementById("publish-location-label").textContent = "丢失地点";
+  showView("publish-success");
+});
+
+function openMine() {
+  let ownerId;
+  try { ownerId = localStorage.getItem(OWNER_KEY); } catch { /* 显示空状态 */ }
+  const ownItems = ownerId ? items.filter(item => item.ownerId === ownerId) : [];
+  document.getElementById("mine-list").replaceChildren(...(ownItems.length
+    ? ownItems.map(createCard)
+    : [makeElement("p", "empty-result", "暂无发布记录，点击发布分享寻物或招领信息。") ]));
+  showView("mine");
+}
+
+publishNav.addEventListener("click", () => showView("publish"));
+mineNav.addEventListener("click", openMine);
+document.getElementById("publish-back").addEventListener("click", () => showView("home"));
+document.getElementById("success-home").addEventListener("click", () => showView("home"));
+document.getElementById("success-mine").addEventListener("click", openMine);
 
 renderHome();
 renderSearch();
