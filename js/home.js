@@ -153,6 +153,7 @@ function filterItems(source, keyword, type) {
   const query = keyword.trim().toLocaleLowerCase();
 
   return source.filter(item => {
+    if (item.status === "resolved") return false;
     const typeMatches = type === "all" || item.type === type;
     const searchableText = [
       item.name, item.category, item.description, item.location
@@ -182,7 +183,10 @@ let previousView = "home";
 let currentView = "home";
 
 function renderHome() {
-  homeList.replaceChildren(...items.slice(0, 3).map(createCard));
+  const latest = filterItems(items, "", "all").slice(0, 3);
+  homeList.replaceChildren(...(latest.length
+    ? latest.map(createCard)
+    : [makeElement("p", "empty-result", "暂无待处理信息，发布寻物或招领信息吧。") ]));
 }
 
 function renderSearch() {
