@@ -43,8 +43,9 @@ function statusText(item) {
 }
 
 function displayTime(value) {
-  const text = String(value || "").replace("T", " ");
-  return /^\d{4}-\d{2}-\d{2}/.test(text) ? text.slice(5, 16) : text;
+  const text = String(value || "").trim();
+  return /^\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}/.test(text)
+    ? text.slice(0, 16).replace("T", " ") : text || "时间未填写";
 }
 
 function displayPublishedTime(value) {
@@ -52,10 +53,11 @@ function displayPublishedTime(value) {
   if (/Z$/.test(text)) {
     const date = new Date(text);
     if (!Number.isNaN(date.getTime())) {
-      return date.toLocaleString("zh-CN", { hour12: false });
+      const pad = number => String(number).padStart(2, "0");
+      return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
     }
   }
-  return text.replace("T", " ") || "时间未填写";
+  return displayTime(text);
 }
 
 function makeElement(tag, className, text) {
@@ -89,7 +91,7 @@ function openDetail(item) {
   const rows = [
     [isLost ? "丢失地点" : "拾取地点", item.location],
     [isLost ? "丢失时间" : "拾取时间",
-      String(item.eventTime || "").replace("T", " ")]
+      displayTime(item.eventTime)]
   ];
 
   for (const [index, [label, value]] of rows.entries()) {
@@ -392,10 +394,15 @@ function editItem(id) {
   }
   editingId = id;
   for (const name of Object.keys(publishFields)) {
-    document.getElementById(`publish-${name}`).value = String(record[name] || "");
+    const value = String(record[name] || "");
+    document.getElementById(`publish-${name}`).value = name === "eventTime"
+      ? value.replace(/^(\d{4}-\d{2}-\d{2}) /, "$1T") : value;
   }
   setPublishType(record.type === "found" ? "found" : "lost");
   setEditMode(true);
+  if (!document.getElementById("publish-eventTime").value) {
+    setFieldError("eventTime", `原记录时间为“${record.eventTime || "未填写"}”，请重新选择日期和时间。`);
+  }
   showView("publish");
   document.getElementById("publish-name").focus();
 }
@@ -434,7 +441,8 @@ publishForm.addEventListener("submit", event => {
     const input = document.getElementById(`publish-${name}`);
     values[name] = input.value.trim();
     const message = !values[name] ? `请填写${label}` :
-      values[name].length > input.maxLength ? `${label}最多填写${input.maxLength}个字符` : "";
+      name === "eventTime" && !input.validity.valid ? "请选择有效的日期和时间" :
+      input.maxLength > 0 && values[name].length > input.maxLength ? `${label}最多填写${input.maxLength}个字符` : "";
     setFieldError(name, message);
     if (message && !firstInvalid) firstInvalid = input;
   }

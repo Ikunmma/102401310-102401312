@@ -127,7 +127,7 @@
               </div>
               <div class="publish-field">
                 <label for="publish-eventTime"><span id="publish-time-label">丢失时间</span><span>*</span></label>
-                <input id="publish-eventTime" name="eventTime" required maxlength="80" placeholder="如：9月26日 下午三点" aria-describedby="error-eventTime">
+                <input id="publish-eventTime" name="eventTime" type="datetime-local" required step="60" aria-describedby="error-eventTime">
                 <p id="error-eventTime" class="field-error" hidden></p>
               </div>
               <div class="publish-field">
