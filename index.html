@@ -98,7 +98,7 @@
       <section id="publish-view" hidden>
         <main class="content publish-content">
           <button id="publish-back" class="detail-back" type="button">‹ 返回首页</button>
-          <div class="section-heading"><h2>发布信息</h2></div>
+          <div class="section-heading"><h2 id="publish-heading">发布信息</h2></div>
           <form id="publish-form" class="publish-form" novalidate>
             <fieldset class="publish-type">
               <legend>你要发布什么？</legend>
@@ -141,7 +141,8 @@
             </div>
             <p class="publish-note">请勿公开校园卡完整号码、住址等敏感信息；联系与归还前先核对物品特征。</p>
             <p id="publish-error" class="field-error" role="alert" hidden></p>
-            <button class="contact-button" type="submit">发布信息</button>
+            <button id="publish-submit" class="contact-button" type="submit">发布信息</button>
+            <button id="edit-cancel" class="secondary-button" type="button" hidden>取消修改</button>
           </form>
         </main>
       </section>

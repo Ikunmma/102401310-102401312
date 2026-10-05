@@ -281,6 +281,88 @@ const publishFields = {
   location: "地点", description: "外观特征", contact: "联系方式"
 };
 let publishType = "lost";
+let editingId = null;
+let publishDraft = null;
+
+function setPublishType(type) {
+  publishType = type;
+  document.querySelectorAll('input[name="publish-type"]').forEach(input => {
+    input.checked = input.value === type;
+  });
+  document.getElementById("publish-time-label").textContent = type === "lost" ? "丢失时间" : "拾取时间";
+  document.getElementById("publish-location-label").textContent = type === "lost" ? "丢失地点" : "拾取地点";
+}
+
+function setEditMode(editing) {
+  document.getElementById("publish-heading").textContent = editing ? "编辑发布信息" : "发布信息";
+  document.getElementById("publish-submit").textContent = editing ? "保存修改" : "发布信息";
+  document.getElementById("publish-back").textContent = editing ? "‹ 返回我的发布" : "‹ 返回首页";
+  document.getElementById("edit-cancel").hidden = !editing;
+  publishError.hidden = true;
+  Object.keys(publishFields).forEach(name => setFieldError(name, ""));
+}
+
+function leaveEdit() {
+  editingId = null;
+  publishForm.reset();
+  for (const name of Object.keys(publishFields)) {
+    document.getElementById(`publish-${name}`).value = publishDraft?.[name] || "";
+  }
+  setPublishType(publishDraft?.type || "lost");
+  publishDraft = null;
+  setEditMode(false);
+}
+
+function readOwnedRecord(id) {
+  const ownerId = localStorage.getItem(OWNER_KEY);
+  const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+  if (!Array.isArray(saved)) throw new Error("无法读取发布记录，请刷新页面后重试。");
+  const record = saved.find(item => item && item.id === id && item.ownerId === ownerId);
+  if (!ownerId || !record) throw new Error("未找到你的发布记录，请刷新页面后重试。");
+  return { saved, record };
+}
+
+function updateOwnedRecord(id, changes) {
+  const { saved, record } = readOwnedRecord(id);
+  const updated = { ...record, ...changes };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(saved.map(item => item === record ? updated : item)));
+  const index = items.findIndex(item => item.id === id && item.ownerId === record.ownerId);
+  if (index !== -1) items[index] = updated;
+  renderHome();
+  renderSearch();
+  renderMine();
+  return updated;
+}
+
+function showMineFeedback(message, error = false) {
+  const feedback = document.getElementById("mine-feedback");
+  feedback.textContent = message;
+  feedback.className = `mine-feedback${error ? " is-error" : ""}`;
+  feedback.hidden = false;
+  feedback.focus();
+}
+
+function editItem(id) {
+  let record;
+  try { record = readOwnedRecord(id).record; } catch {
+    showMineFeedback("无法读取你的发布记录，请检查本地存储或刷新页面后重试。", true);
+    return;
+  }
+  if (!editingId) {
+    publishDraft = { type: publishType };
+    for (const name of Object.keys(publishFields)) {
+      publishDraft[name] = document.getElementById(`publish-${name}`).value;
+    }
+  }
+  editingId = id;
+  for (const name of Object.keys(publishFields)) {
+    document.getElementById(`publish-${name}`).value = String(record[name] || "");
+  }
+  setPublishType(record.type === "found" ? "found" : "lost");
+  setEditMode(true);
+  showView("publish");
+  document.getElementById("publish-name").focus();
+}
 
 function uniqueId() {
   return window.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`;
@@ -297,9 +379,7 @@ function setFieldError(name, message) {
 
 document.querySelectorAll('input[name="publish-type"]').forEach(input => {
   input.addEventListener("change", () => {
-    publishType = input.value;
-    document.getElementById("publish-time-label").textContent = publishType === "lost" ? "丢失时间" : "拾取时间";
-    document.getElementById("publish-location-label").textContent = publishType === "lost" ? "丢失地点" : "拾取地点";
+    setPublishType(input.value);
   });
 });
 
@@ -326,6 +406,20 @@ publishForm.addEventListener("submit", event => {
     firstInvalid.focus();
     return;
   }
+  if (editingId) {
+    let updated;
+    try {
+      updated = updateOwnedRecord(editingId, { ...values, type: publishType });
+    } catch {
+      publishError.textContent = "修改保存失败，请检查本地存储及发布记录后重试。填写的内容已保留。";
+      publishError.hidden = false;
+      return;
+    }
+    leaveEdit();
+    openMine();
+    showMineFeedback(`“${updated.name}”的修改已保存。`);
+    return;
+  }
   let item;
   try {
     let ownerId = localStorage.getItem(OWNER_KEY);
@@ -346,9 +440,7 @@ publishForm.addEventListener("submit", event => {
   document.getElementById("publish-success-message").textContent =
     `你的${publishType === "lost" ? "寻物" : "招领"}信息已经加入校园信息列表。`;
   publishForm.reset();
-  publishType = "lost";
-  document.getElementById("publish-time-label").textContent = "丢失时间";
-  document.getElementById("publish-location-label").textContent = "丢失地点";
+  setPublishType("lost");
   showView("publish-success");
 });
 
@@ -371,50 +463,34 @@ function renderMine() {
   list.replaceChildren(...ownItems.map(item => {
     const entry = makeElement("article", "mine-entry", "");
     entry.append(createCard(item));
-    if (item.status !== "resolved") {
-      const action = makeElement("button", "resolve-button", item.type === "lost" ? "标记已找到" : "标记已归还");
-      action.type = "button";
-      action.setAttribute("aria-label", `${action.textContent}：${item.name || "未命名物品"}`);
-      action.addEventListener("click", () => resolveItem(item.id));
-      entry.append(action);
-    }
+    const actions = makeElement("div", "mine-actions", "");
+    const edit = makeElement("button", "edit-button", "编辑信息");
+    edit.type = "button";
+    edit.setAttribute("aria-label", `编辑信息：${item.name || "未命名物品"}`);
+    edit.addEventListener("click", () => editItem(item.id));
+    const resolved = item.status === "resolved";
+    const action = makeElement("button", "resolve-button", resolved ? "撤销完成标记" : item.type === "lost" ? "标记已找到" : "标记已归还");
+    action.type = "button";
+    action.setAttribute("aria-label", `${action.textContent}：${item.name || "未命名物品"}`);
+    action.addEventListener("click", () => resolveItem(item.id, resolved ? "active" : "resolved"));
+    actions.append(edit, action);
+    entry.append(actions);
     return entry;
   }));
 }
 
-function resolveItem(id) {
-  const feedback = document.getElementById("mine-feedback");
+function resolveItem(id, status = "resolved") {
+  if (status !== "active" && status !== "resolved") return;
   let updated;
   try {
-    const ownerId = localStorage.getItem(OWNER_KEY);
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-    if (!Array.isArray(saved)) throw new Error("Invalid storage");
-    const record = saved.find(item => item && item.id === id && item.ownerId === ownerId);
-    if (!ownerId || !record) {
-      feedback.textContent = "未找到你的发布记录，请刷新页面后重试。";
-      feedback.className = "mine-feedback is-error";
-      feedback.hidden = false;
-      feedback.focus();
-      return;
-    }
-    updated = { ...record, status: "resolved" };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(saved.map(item => item === record ? updated : item)));
+    updated = updateOwnedRecord(id, { status });
   } catch {
-    feedback.textContent = "状态保存失败，请检查浏览器是否允许本地存储后重试。";
-    feedback.className = "mine-feedback is-error";
-    feedback.hidden = false;
-    feedback.focus();
+    showMineFeedback("状态保存失败，请检查本地存储及发布记录后重试。", true);
     return;
   }
-  const index = items.findIndex(item => item.id === id && item.ownerId === updated.ownerId);
-  if (index !== -1) items[index] = updated;
-  renderHome();
-  renderSearch();
-  renderMine();
-  feedback.textContent = `“${updated.name || "未命名物品"}”已标记为${statusText(updated)}。`;
-  feedback.className = "mine-feedback";
-  feedback.hidden = false;
-  feedback.focus();
+  showMineFeedback(status === "active"
+    ? `已撤销“${updated.name || "未命名物品"}”的完成标记，恢复为${statusText(updated)}。`
+    : `“${updated.name || "未命名物品"}”已标记为${statusText(updated)}。`);
 }
 
 function openMine() {
@@ -423,9 +499,16 @@ function openMine() {
   showView("mine");
 }
 
-publishNav.addEventListener("click", () => showView("publish"));
+publishNav.addEventListener("click", () => {
+  if (editingId) leaveEdit();
+  showView("publish");
+});
 mineNav.addEventListener("click", openMine);
-document.getElementById("publish-back").addEventListener("click", () => showView("home"));
+document.getElementById("publish-back").addEventListener("click", () => {
+  if (editingId) { leaveEdit(); openMine(); }
+  else showView("home");
+});
+document.getElementById("edit-cancel").addEventListener("click", () => { leaveEdit(); openMine(); });
 document.getElementById("success-home").addEventListener("click", () => showView("home"));
 document.getElementById("success-mine").addEventListener("click", openMine);
 document.getElementById("mine-back").addEventListener("click", () => showView("home"));

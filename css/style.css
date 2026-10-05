@@ -526,6 +526,11 @@ button { font: inherit; }
 }
 .resolve-button:hover { background: #d1ebe3; }
 .resolve-button:focus-visible { outline: 2px solid var(--brand); outline-offset: 3px; }
+.mine-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 15px; }
+.mine-actions .resolve-button { margin-top: 0; padding: 14px 8px; }
+.edit-button { padding: 14px 8px; border: 1px solid var(--line); border-radius: 12px; background: white; color: var(--ink); font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; }
+.edit-button:hover { border-color: var(--brand); color: var(--brand); }
+.edit-button:focus-visible { outline: 2px solid var(--brand); outline-offset: 3px; }
 .mine-empty { grid-column: 1 / -1; padding: 40px 24px; border: 1px dashed var(--line); border-radius: 18px; background: white; text-align: center; }
 .mine-empty-icon { color: var(--brand); font-size: 38px; }
 .mine-empty h3 { margin: 10px 0 6px; font-size: 18px; }
