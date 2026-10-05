@@ -87,6 +87,10 @@
                 <button type="button" data-type="lost" aria-pressed="false">寻物</button>
               </div>
             </div>
+            <div class="category-filter">
+              <label for="search-category">物品分类</label>
+              <select id="search-category"><option value="">全部分类</option></select>
+            </div>
           </form>
 
           <div class="search-results-heading">
@@ -116,7 +120,9 @@
               </div>
               <div class="publish-field">
                 <label for="publish-category">物品分类<span>*</span></label>
-                <input id="publish-category" name="category" required maxlength="40" placeholder="如：生活用品、证件卡片" aria-describedby="error-category">
+                <select id="publish-category" name="category" required aria-describedby="error-category">
+                  <option value="">请选择物品分类</option>
+                </select>
                 <p id="error-category" class="field-error" hidden></p>
               </div>
               <div class="publish-field">

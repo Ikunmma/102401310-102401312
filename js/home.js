@@ -149,7 +149,7 @@ const items = [...readSavedItems(), ...demoItems]
     String(b.createdAt || "").localeCompare(String(a.createdAt || ""))
   );
 
-function filterItems(source, keyword, type) {
+function filterItems(source, keyword, type, category = "") {
   const query = keyword.trim().toLocaleLowerCase();
 
   return source.filter(item => {
@@ -159,7 +159,8 @@ function filterItems(source, keyword, type) {
       item.name, item.category, item.description, item.location
     ].map(value => String(value || "")).join(" ").toLocaleLowerCase();
 
-    return typeMatches && searchableText.includes(query);
+    const categoryMatches = !category || String(item.category || "").trim() === category;
+    return typeMatches && categoryMatches && searchableText.includes(query);
   });
 }
 
@@ -169,6 +170,25 @@ const homeList = document.getElementById("item-list");
 const searchList = document.getElementById("search-results");
 const summary = document.getElementById("search-summary");
 const searchInput = document.getElementById("search-input");
+const categorySelect = document.getElementById("search-category");
+const standardCategories = ["证件卡片", "钥匙", "电子设备", "生活用品", "书籍文具", "衣物配饰", "其他物品"];
+
+function refreshCategoryOptions() {
+  const categories = [...new Set([...standardCategories,
+    ...items.map(item => String(item.category || "").trim()).filter(Boolean)])];
+  for (const select of [categorySelect, document.getElementById("publish-category")]) {
+    const value = select.value;
+    const placeholder = select.id === "search-category" ? "全部分类" : "请选择物品分类";
+    const first = makeElement("option", "", placeholder);
+    first.value = "";
+    select.replaceChildren(first, ...categories.map(category => {
+      const option = makeElement("option", "", category);
+      option.value = category;
+      return option;
+    }));
+    select.value = value;
+  }
+}
 const homeView = document.getElementById("home-view");
 const searchView = document.getElementById("search-view");
 const detailView = document.getElementById("detail-view");
@@ -179,6 +199,7 @@ const mineNav = document.getElementById("mine-nav");
 
 let keyword = "";
 let selectedType = "all";
+let selectedCategory = "";
 let previousView = "home";
 let currentView = "home";
 
@@ -190,7 +211,8 @@ function renderHome() {
 }
 
 function renderSearch() {
-  const results = filterItems(items, keyword, selectedType);
+  refreshCategoryOptions();
+  const results = filterItems(items, keyword, selectedType, selectedCategory);
 
   if (results.length === 0) {
     const empty = makeElement("div", "empty-result", "");
@@ -199,6 +221,8 @@ function renderSearch() {
     resetButton.addEventListener("click", () => {
       keyword = "";
       searchInput.value = "";
+      selectedCategory = "";
+      categorySelect.value = "";
       document.querySelector('.type-filters button[data-type="all"]').click();
       searchInput.focus();
     });
@@ -212,7 +236,7 @@ function renderSearch() {
     searchList.replaceChildren(...results.map(createCard));
   }
 
-  summary.textContent = keyword || selectedType !== "all"
+  summary.textContent = keyword || selectedType !== "all" || selectedCategory
     ? `符合条件的 ${results.length} 条信息`
     : `共 ${results.length} 条信息`;
 }
@@ -239,6 +263,12 @@ document.getElementById("search-form").addEventListener("submit", event => {
   renderSearch();
 });
 
+categorySelect.addEventListener("change", () => {
+  selectedCategory = categorySelect.value;
+  keyword = searchInput.value.trim();
+  renderSearch();
+});
+
 document.querySelectorAll(".type-filters button").forEach(button => {
   button.addEventListener("click", () => {
     selectedType = button.dataset.type;
@@ -256,6 +286,8 @@ document.querySelectorAll(".type-filters button").forEach(button => {
 function openSearchWithType(type) {
   keyword = "";
   searchInput.value = "";
+  selectedCategory = "";
+  categorySelect.value = "";
 
   const filterButton = document.querySelector(
     `.type-filters button[data-type="${type}"]`

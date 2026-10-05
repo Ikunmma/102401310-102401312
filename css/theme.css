@@ -8,6 +8,13 @@
   --surface-shadow: 0 10px 30px rgba(31, 52, 60, .045);
 }
 body { background: var(--bg); font-size: 18px; line-height: 1.6; }
+.category-filter { display: flex; align-items: center; flex-wrap: wrap; gap: 16px; margin-top: 20px; }
+.category-filter label { font-size: 20px; font-weight: 600; }
+.category-filter select, .publish-field select { min-height: 60px; padding: 14px 18px; border: 1px solid var(--line); border-radius: 12px; background: white; color: var(--ink); font: inherit; font-size: 20px; }
+.category-filter select { min-width: 220px; max-width: 100%; }
+.publish-field select { width: 100%; }
+.category-filter select:focus, .publish-field select:focus { outline: 2px solid var(--brand); outline-offset: 2px; }
+.publish-field select[aria-invalid="true"] { border-color: #c7463e; }
 #home-view { background: var(--bg); }
 .content { padding-top: 36px; padding-bottom: 56px; }
 .section-heading { margin-bottom: 24px; gap: 16px; }
