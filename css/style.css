@@ -167,6 +167,8 @@ button { font: inherit; }
 
 /* PC 网页布局 */
 @media (min-width: 768px) {
+  html { scrollbar-gutter: stable; }
+
   body {
     display: block;
     background: var(--bg);
@@ -328,6 +330,88 @@ button { font: inherit; }
 #search-view[hidden],
 #detail-view[hidden] {
   display: none;
+}
+
+#publish-view[hidden],
+#publish-success-view[hidden],
+#mine-view[hidden] { display: none; }
+
+.publish-form {
+  padding: 28px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--white);
+}
+.publish-type { margin: 0 0 24px; padding: 0; border: 0; }
+.publish-type legend { margin-bottom: 16px; font-size: 18px; font-weight: 700; }
+.publish-types { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.publish-types label { position: relative; cursor: pointer; }
+.publish-types input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.publish-types span {
+  display: block;
+  padding: 13px 10px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  color: var(--muted);
+  text-align: center;
+  font-weight: 700;
+}
+.publish-types input:checked + span { background: var(--brand); border-color: var(--brand); color: white; }
+.publish-types input:focus-visible + span { outline: 2px solid var(--brand); outline-offset: 3px; }
+.publish-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px 20px; }
+.publish-wide { grid-column: 1 / -1; }
+.publish-field > label { display: block; margin-bottom: 9px; font-size: 14px; font-weight: 700; }
+.publish-field > label > span:last-child { color: #c7463e; }
+.publish-field input, .publish-field textarea {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: white;
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+}
+.publish-field textarea { resize: vertical; min-height: 90px; }
+.publish-field input::placeholder, .publish-field textarea::placeholder { color: var(--muted); }
+.publish-field input:focus, .publish-field textarea:focus { outline: 2px solid var(--brand); outline-offset: 2px; }
+.publish-field [aria-invalid="true"] { border-color: #c7463e; }
+.field-error { margin: 8px 0 0; color: #c7463e; font-size: 13px; line-height: 1.6; }
+.publish-note { margin: 22px 0 0; padding: 15px; border-radius: 12px; background: #fff0e6; color: #b96542; font-size: 13px; line-height: 1.8; }
+.publish-success { padding: 40px 24px; border-radius: 22px; background: white; text-align: center; }
+.success-mark { color: var(--brand); font-size: 48px; }
+.publish-success h2 { margin: 12px 0; font-size: 24px; }
+.publish-success p { color: var(--muted); font-size: 14px; line-height: 1.8; }
+.secondary-button { width: 100%; margin-top: 12px; padding: 14px 18px; border: 0; border-radius: 12px; background: #e1f2ec; color: var(--brand); font: inherit; font-weight: 700; cursor: pointer; }
+.mine-heading { margin-top: 26px; }
+.mine-heading h3 { margin: 0; font-size: 18px; }
+.mine-entry { min-width: 0; }
+.mine-entry .item-card { min-height: 150px; }
+.mine-entry .card-description { display: none; }
+.resolve-button {
+  width: 100%;
+  margin-top: 15px;
+  padding: 15px;
+  border: 0;
+  border-radius: 12px;
+  background: #e1f2ec;
+  color: var(--brand);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.resolve-button:hover { background: #d1ebe3; }
+.resolve-button:focus-visible { outline: 2px solid var(--brand); outline-offset: 3px; }
+.mine-empty { grid-column: 1 / -1; padding: 40px 24px; border: 1px dashed var(--line); border-radius: 18px; background: white; text-align: center; }
+.mine-empty-icon { color: var(--brand); font-size: 38px; }
+.mine-empty h3 { margin: 10px 0 6px; font-size: 18px; }
+.mine-empty p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.8; }
+.mine-feedback { margin: 0 0 18px; padding: 14px 18px; border-radius: 12px; background: #e1f2ec; color: var(--brand); font-size: 14px; line-height: 1.6; }
+.mine-feedback.is-error { background: #fff0e6; color: #b33f37; }
+@media (max-width: 767px) {
+  .publish-form { padding: 0; border: 0; background: transparent; }
+  .publish-fields { grid-template-columns: 1fr; }
 }
 
 .search-banner {

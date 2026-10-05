@@ -89,6 +89,80 @@
           <div id="search-results" class="item-list"></div>
         </main>
       </section>
+      <section id="publish-view" hidden>
+        <main class="content publish-content">
+          <button id="publish-back" class="detail-back" type="button">‹ 返回首页</button>
+          <div class="section-heading"><h2>发布信息</h2></div>
+          <form id="publish-form" class="publish-form" novalidate>
+            <fieldset class="publish-type">
+              <legend>你要发布什么？</legend>
+              <div class="publish-types">
+                <label><input type="radio" name="publish-type" value="lost" checked><span>我丢了 · 寻物</span></label>
+                <label><input type="radio" name="publish-type" value="found"><span>我捡到 · 招领</span></label>
+              </div>
+            </fieldset>
+            <div class="publish-fields">
+              <div class="publish-field">
+                <label for="publish-name">物品名称<span>*</span></label>
+                <input id="publish-name" name="name" required maxlength="80" placeholder="如：黑色折叠伞" aria-describedby="error-name">
+                <p id="error-name" class="field-error" hidden></p>
+              </div>
+              <div class="publish-field">
+                <label for="publish-category">物品分类<span>*</span></label>
+                <input id="publish-category" name="category" required maxlength="40" placeholder="如：生活用品、证件卡片" aria-describedby="error-category">
+                <p id="error-category" class="field-error" hidden></p>
+              </div>
+              <div class="publish-field">
+                <label for="publish-eventTime"><span id="publish-time-label">丢失时间</span><span>*</span></label>
+                <input id="publish-eventTime" name="eventTime" required maxlength="80" placeholder="如：9月26日 下午三点" aria-describedby="error-eventTime">
+                <p id="error-eventTime" class="field-error" hidden></p>
+              </div>
+              <div class="publish-field">
+                <label for="publish-location"><span id="publish-location-label">丢失地点</span><span>*</span></label>
+                <input id="publish-location" name="location" required maxlength="120" placeholder="如：第三教学楼 203" aria-describedby="error-location">
+                <p id="error-location" class="field-error" hidden></p>
+              </div>
+              <div class="publish-field publish-wide">
+                <label for="publish-description">外观特征<span>*</span></label>
+                <textarea id="publish-description" name="description" required maxlength="1000" rows="3" placeholder="颜色、样式等可帮助核对的信息" aria-describedby="error-description"></textarea>
+                <p id="error-description" class="field-error" hidden></p>
+              </div>
+              <div class="publish-field publish-wide">
+                <label for="publish-contact">联系方式<span>*</span></label>
+                <input id="publish-contact" name="contact" required maxlength="200" placeholder="如 QQ、邮箱或校内服务台" aria-describedby="error-contact">
+                <p id="error-contact" class="field-error" hidden></p>
+              </div>
+            </div>
+            <p class="publish-note">请勿公开校园卡完整号码、住址等敏感信息；联系与归还前先核对物品特征。</p>
+            <p id="publish-error" class="field-error" role="alert" hidden></p>
+            <button class="contact-button" type="submit">发布信息</button>
+          </form>
+        </main>
+      </section>
+      <section id="publish-success-view" hidden>
+        <main class="content publish-content">
+          <div class="section-heading"><h2>发布成功</h2></div>
+          <div class="publish-success" role="status">
+            <span class="success-mark" aria-hidden="true">✓</span>
+            <h2>发布成功</h2>
+            <p id="publish-success-message"></p>
+          </div>
+          <button id="success-mine" class="contact-button" type="button">查看我的发布</button>
+          <button id="success-home" class="secondary-button" type="button">返回首页</button>
+        </main>
+      </section>
+      <section id="mine-view" hidden>
+        <main class="content">
+          <button id="mine-back" class="detail-back" type="button">‹ 返回首页</button>
+          <div class="section-heading"><h2>我的发布</h2></div>
+          <div class="section-heading mine-heading">
+            <h3>我发布的信息</h3>
+            <span id="mine-count">0 条</span>
+          </div>
+          <p id="mine-feedback" class="mine-feedback" role="status" tabindex="-1" hidden></p>
+          <div id="mine-list" class="item-list"></div>
+        </main>
+      </section>
       <section id="detail-view" hidden>
         <main class="content detail-content">
           <button id="detail-back" class="detail-back" type="button">
@@ -135,10 +209,10 @@
       <button id="search-nav" class="nav-item" type="button">
         <span class="nav-icon">⌕</span><span>搜索</span>
       </button>
-      <button class="nav-item" type="button" disabled>
+      <button id="publish-nav" class="nav-item" type="button">
         <span class="nav-icon">＋</span><span>发布</span>
       </button>
-      <button class="nav-item" type="button" disabled>
+      <button id="mine-nav" class="nav-item" type="button">
         <span class="nav-icon">○</span><span>我的</span>
       </button>
     </nav>
