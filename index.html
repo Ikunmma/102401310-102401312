@@ -12,24 +12,55 @@
     <div class="page-scroll">
       <section id="home-view">
         <header class="hero">
-          <p class="hero-eyebrow">拾光校园 / LOST &amp; FOUND</p>
-          <h1>让每件小物<br>找到回家的路</h1>
-          <p class="hero-description">校园失物与招领信息，集中看、方便找</p>
+          <div class="hero-copy">
+            <h1>在校园里走散的小物，<br><span>总会找到回家的路。</span></h1>
+          </div>
           <span class="hero-emblem">
             <img src="assets/campus-emblem.png" alt="福州大学校徽">
           </span>
         </header>
 
         <main class="content">
-          <div class="section-heading">
-            <h2>最新信息</h2>
-            <span>点击卡片查看详情</span>
+          <div class="home-shortcuts" aria-label="快捷浏览">
+            <button class="shortcut-card" data-home-type="found" type="button">
+              <span class="shortcut-icon" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search">
+                  <path d="m21 21-4.34-4.34"/>
+                  <circle cx="11" cy="11" r="8"/>
+                </svg>
+              </span>
+              <span class="shortcut-copy">
+                <strong>查看招领信息</strong>
+              </span>
+            </button>
+
+            <button class="shortcut-card" data-home-type="lost" type="button">
+              <span class="shortcut-icon shortcut-icon-orange" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-package-search">
+                  <path d="M12 22V12"/>
+                  <path d="M20.27 18.27 22 20"/>
+                  <path d="M21 10.498V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.729l7 4a2 2 0 0 0 2 .001l.98-.559"/>
+                  <path d="M3.29 7 12 12l8.71-5"/>
+                  <path d="m7.5 4.27 8.997 5.148"/>
+                  <circle cx="18.5" cy="16.5" r="2.5"/>
+                </svg>
+              </span>
+              <span class="shortcut-copy">
+                <strong>查看寻物信息</strong>
+              </span>
+            </button>
           </div>
-          <div id="item-list" class="item-list"></div>
-          <p class="page-note">
-            初始卡片为演示信息。使用导航栏“搜索”查找物品。
-            校徽仅作校园主题展示，不代表官方认证。
-          </p>
+
+          <section id="home-news" class="home-news">
+            <div class="section-heading">
+              <h2>最新发布</h2>
+            </div>
+
+            <div id="item-list" class="item-list"></div>
+            <p class="page-note">
+              初始卡片为演示信息。校徽仅作校园主题展示，不代表官方认证。
+            </p>
+          </section>
         </main>
       </section>
 
@@ -94,6 +125,10 @@
     </div>
 
     <nav class="bottom-nav" aria-label="主导航">
+      <div class="nav-brand" aria-label="拾光校园">
+        <span class="brand-mark">拾</span>
+        <span class="brand-name">拾光校园</span>
+      </div>
       <button id="home-nav" class="nav-item active" type="button" aria-current="page">
         <span class="nav-icon">⌂</span><span>首页</span>
       </button>

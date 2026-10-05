@@ -123,6 +123,11 @@ function createCard(item) {
     makeElement("span", "card-name", item.name || "未命名物品"),
     makeElement(
       "span",
+      "card-description",
+      item.description || "暂无详细描述"
+    ),
+    makeElement(
+      "span",
       "card-meta",
       `${item.location || "地点未填"} · ${displayTime(item.eventTime)}`
     )
@@ -224,6 +229,23 @@ document.querySelectorAll(".type-filters button").forEach(button => {
     });
 
     renderSearch();
+  });
+});
+
+function openSearchWithType(type) {
+  keyword = "";
+  searchInput.value = "";
+
+  const filterButton = document.querySelector(
+    `.type-filters button[data-type="${type}"]`
+  );
+  filterButton.click();
+  showView("search");
+}
+
+document.querySelectorAll("[data-home-type]").forEach(button => {
+  button.addEventListener("click", () => {
+    openSearchWithType(button.dataset.homeType);
   });
 });
 

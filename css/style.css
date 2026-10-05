@@ -50,23 +50,11 @@ button { font: inherit; }
     url("../assets/campus-hero.png") center / cover;
 }
 
-.hero-eyebrow {
-  margin: 0 0 18px;
-  font-size: 12px;
-  letter-spacing: .72px;
-}
-
 .hero h1 {
   margin: 0 0 16px;
   font-size: 28px;
   line-height: 1.35;
   letter-spacing: .56px;
-}
-
-.hero-description {
-  margin: 0;
-  font-size: 12px;
-  color: #e8f4ef;
 }
 
 .hero-emblem {
@@ -222,9 +210,7 @@ button { font: inherit; }
     border-radius: 0;
   }
 
-  .hero-eyebrow { font-size: 14px; }
   .hero h1 { font-size: 40px; }
-  .hero-description { font-size: 16px; }
 
   .hero-emblem {
     top: 32px;
@@ -580,4 +566,256 @@ button { font: inherit; }
     grid-template-columns: 82px minmax(0, 1fr);
     gap: 10px;
   }
+}
+
+/* 首页改版 */
+#home-view {
+  background: linear-gradient(180deg, #f4f8f7 0%, #fbfdfc 100%);
+}
+
+.hero {
+  display: flex;
+  align-items: center;
+  min-height: 390px;
+  height: auto;
+  padding: 42px 24px;
+  color: var(--ink);
+  background:
+    linear-gradient(90deg,
+      rgba(246, 251, 248, .98) 0%,
+      rgba(246, 251, 248, .90) 48%,
+      rgba(246, 251, 248, .38) 100%),
+    url("../assets/campus-hero.png") center / cover;
+}
+
+.hero-copy {
+  position: relative;
+  z-index: 1;
+  max-width: 750px;
+}
+
+.hero h1 {
+  margin: 0;
+  font-size: clamp(34px, 4.2vw, 62px);
+  line-height: 1.28;
+  letter-spacing: -.5px;
+}
+
+.hero h1 span {
+  color: var(--brand);
+}
+
+.hero-emblem {
+  top: 22px;
+  right: 22px;
+  width: 72px;
+  height: 72px;
+  background: rgba(255, 255, 255, .9);
+  box-shadow: 0 5px 20px rgba(25, 59, 67, .1);
+}
+
+.hero-emblem img {
+  width: 62px;
+  height: 62px;
+}
+
+#home-view > .content {
+  padding-top: 24px;
+}
+
+.home-shortcuts {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 50px;
+}
+
+.shortcut-card {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  min-height: 116px;
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: white;
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(24, 76, 71, .04);
+  transition: transform .2s, border-color .2s, box-shadow .2s;
+}
+
+.shortcut-card:hover {
+  transform: translateY(-4px);
+  border-color: #a8d4c8;
+  box-shadow: 0 16px 32px rgba(24, 76, 71, .1);
+}
+
+.shortcut-icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 58px;
+  height: 58px;
+  border-radius: 16px;
+  background: #e1f2ec;
+  color: var(--brand);
+}
+
+.shortcut-icon svg {
+  display: block;
+  width: 27px;
+  height: 27px;
+}
+
+.shortcut-icon-orange {
+  background: #f9ebe1;
+  color: var(--orange);
+}
+
+.shortcut-copy {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.shortcut-copy strong {
+  font-size: 25px;
+}
+
+#home-view .section-heading {
+  margin-bottom: 22px;
+}
+
+#home-view .section-heading h2 {
+  font-size: 32px;
+}
+
+.item-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 210px;
+  transition: transform .2s, box-shadow .2s, border-color .2s;
+}
+
+.item-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 30px rgba(24, 76, 71, .11);
+}
+
+.card-type {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+.card-type.found {
+  background: #e3f4ee;
+}
+
+.card-type.lost {
+  background: #fbede4;
+}
+
+.card-name {
+  margin: 18px 0 8px;
+}
+
+.card-description {
+  display: -webkit-box;
+  overflow: hidden;
+  margin-bottom: 18px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.card-meta {
+  display: block;
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  font-size: 12px;
+}
+
+.nav-brand {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: auto;
+  }
+
+  .brand-mark {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 11px;
+    background: var(--brand);
+    color: white;
+    font-size: 22px;
+    font-weight: 700;
+  }
+
+  .brand-name {
+    color: var(--ink);
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .hero {
+    width: min(calc(100% - 48px), 1200px);
+    min-height: 420px;
+    margin: 28px auto 0;
+    padding: 60px 72px;
+    border-radius: 28px;
+  }
+
+  .hero-emblem {
+    top: 28px;
+    right: 28px;
+    width: 104px;
+    height: 104px;
+  }
+
+  .hero-emblem img {
+    width: 90px;
+    height: 90px;
+  }
+
+  .home-shortcuts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .home-shortcuts {
+    margin-bottom: 38px;
+  }
+
+  .shortcut-card {
+    min-height: 104px;
+  }
+
+  .shortcut-copy strong {
+    font-size: 21px;
+  }
+
+  #home-view .section-heading h2 {
+    font-size: 23px;
+  }
+
+}
+
+.shortcut-card:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 3px;
 }
