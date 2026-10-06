@@ -125,6 +125,10 @@ button:focus-visible { outline: 3px solid var(--brand); outline-offset: 3px; }
 }
 
 /* 联系方式直接展示，复制反馈保持清楚的大字。 */
+.empty-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 14px; margin-top: 24px; }
+.empty-actions .empty-reset { margin-top: 0; }
+.empty-publish { min-height: 56px; padding: 14px 24px; border: 0; border-radius: 12px; background: var(--brand); color: white; font: inherit; font-size: 20px; font-weight: 600; cursor: pointer; }
+.empty-publish:hover { background: #066c66; }
 #detail-view .contact-text { flex: 1; min-width: 0; margin: 0; background: transparent; padding: 0; user-select: text; }
 #detail-view .contact-button { min-width: 180px; margin-left: 0; }
 #detail-view .copy-feedback { flex-basis: 100%; margin: 0; color: var(--brand); font-size: 18px; line-height: 1.6; }

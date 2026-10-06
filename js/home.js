@@ -253,20 +253,24 @@ function renderSearch() {
 
   if (results.length === 0) {
     const empty = makeElement("div", "empty-result", "");
-    const resetButton = makeElement("button", "empty-reset", "清除条件，查看全部");
-    resetButton.type = "button";
-    resetButton.addEventListener("click", () => {
-      keyword = "";
-      searchInput.value = "";
-      selectedCategory = "";
-      categorySelect.value = "";
-      document.querySelector('.type-filters button[data-type="all"]').click();
-      searchInput.focus();
+    const publishButton = makeElement("button", "empty-publish", "发布寻物");
+    publishButton.type = "button";
+    publishButton.addEventListener("click", () => {
+      if (editingId) leaveEdit();
+      setEditMode(false);
+      setPublishType("lost");
+      const nameInput = document.getElementById("publish-name");
+      if (!nameInput.value.trim()) nameInput.value = keyword.slice(0, nameInput.maxLength);
+      const publishCategory = document.getElementById("publish-category");
+      if (!publishCategory.value && selectedCategory) publishCategory.value = selectedCategory;
+      showView("publish");
+      nameInput.focus();
     });
+    const actions = makeElement("div", "empty-actions", "");
+    actions.append(publishButton);
     empty.append(
       makeElement("h3", "", "暂时没有找到相关信息"),
-      makeElement("p", "", "试试其他物品名称或地点，也可以清除筛选条件。"),
-      resetButton
+      actions
     );
     searchList.replaceChildren(empty);
   } else {
