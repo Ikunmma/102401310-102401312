@@ -123,3 +123,12 @@ button:focus-visible { outline: 3px solid var(--brand); outline-offset: 3px; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; }
 }
+
+/* 联系方式直接展示，复制反馈保持清楚的大字。 */
+#detail-view .contact-text { flex: 1; min-width: 0; margin: 0; background: transparent; padding: 0; user-select: text; }
+#detail-view .contact-button { min-width: 180px; margin-left: 0; }
+#detail-view .copy-feedback { flex-basis: 100%; margin: 0; color: var(--brand); font-size: 18px; line-height: 1.6; }
+#detail-view .contact-button:disabled { opacity: .55; cursor: default; transform: none; }
+@media (max-width: 767px) {
+  #detail-view .contact-text { flex-basis: 100%; }
+}

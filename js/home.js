@@ -67,8 +67,11 @@ function makeElement(tag, className, text) {
   return element;
 }
 
-const contactButton = document.getElementById("reveal-contact");
+const contactButton = document.getElementById("copy-contact");
 const contactText = document.getElementById("detail-contact");
+const copyFeedback = document.getElementById("copy-contact-feedback");
+let currentContact = "";
+let contactVersion = 0;
 
 function openDetail(item) {
   const isLost = item.type === "lost";
@@ -104,17 +107,49 @@ function openDetail(item) {
     fields.append(row);
   }
 
-  contactText.textContent = `联系方式：${item.contact || "未提供"}`;
-  contactText.hidden = true;
-  contactButton.hidden = false;
+  currentContact = String(item.contact || "").trim();
+  contactVersion += 1;
+  contactText.textContent = currentContact || "未提供联系方式";
+  contactButton.disabled = !currentContact;
+  copyFeedback.hidden = true;
 
   previousView = currentView;
   showView("detail");
 }
 
-contactButton.addEventListener("click", () => {
-  contactText.hidden = false;
-  contactButton.hidden = true;
+async function copyContact(value) {
+  if (navigator.clipboard?.writeText) {
+    try {
+      await navigator.clipboard.writeText(value);
+      return true;
+    } catch { /* 直接打开 HTML 或权限受限时使用备用方式 */ }
+  }
+  const field = document.createElement("textarea");
+  field.value = value;
+  field.setAttribute("readonly", "");
+  field.style.cssText = "position:fixed;left:-9999px;top:0";
+  const previousFocus = document.activeElement;
+  document.body.append(field);
+  try {
+    field.select();
+    return document.execCommand("copy");
+  } catch {
+    return false;
+  } finally {
+    field.remove();
+    previousFocus?.focus();
+  }
+}
+
+contactButton.addEventListener("click", async () => {
+  if (!currentContact) return;
+  const version = contactVersion;
+  contactButton.disabled = true;
+  const copied = await copyContact(currentContact);
+  if (version !== contactVersion) return;
+  contactButton.disabled = false;
+  copyFeedback.textContent = copied ? "联系方式已复制" : "复制失败，请选中联系方式后按 Ctrl + C 复制。";
+  copyFeedback.hidden = false;
 });
 
 function createCard(item) {
