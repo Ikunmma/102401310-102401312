@@ -92,7 +92,8 @@ function openDetail(item) {
   fields.replaceChildren();
 
   const rows = [
-    [isLost ? "丢失地点" : "拾取地点", item.location],
+    [isLost ? "丢失地点" : "拾取地点", item.region
+      ? `${regionNames[item.region] || "其他区域"} · ${item.location || "未填写"}` : item.location],
     [isLost ? "丢失时间" : "拾取时间",
       displayTime(item.eventTime)]
   ];
@@ -109,7 +110,8 @@ function openDetail(item) {
 
   currentContact = String(item.contact || "").trim();
   contactVersion += 1;
-  contactText.textContent = currentContact || "未提供联系方式";
+  contactText.textContent = currentContact
+    ? `${item.contactMethod ? item.contactMethod + "：" : ""}${currentContact}` : "未提供联系方式";
   contactButton.disabled = !currentContact;
   copyFeedback.hidden = true;
 
@@ -192,6 +194,8 @@ function eventTimestamp(value) {
   return new Date(text.replace(" ", "T")).getTime();
 }
 
+const regionNames = { teaching: "教学区", library: "图书馆", canteen: "食堂", dorm: "宿舍区", sports: "操场", other: "其他区域" };
+
 function matchesRegion(location, region) {
   const patterns = {
     teaching: /教学|实验楼|实验室/, library: /图书馆/, canteen: /食堂|餐厅/,
@@ -216,7 +220,7 @@ function filterItems(source, keyword, type, category = "", options = {}) {
     const timeMatches = !options.days || (Number.isFinite(time) &&
       time >= now - Number(options.days) * 86400000 && time <= now);
     return typeMatches && categoryMatches && searchableText.includes(query) &&
-      matchesRegion(item.location, options.region) && timeMatches;
+      (!options.region || (item.region ? item.region === options.region : matchesRegion(item.location, options.region))) && timeMatches;
   });
 }
 
@@ -398,6 +402,7 @@ document.getElementById("detail-back").addEventListener("click", () => {
   showView(previousView);
 });
 homeNav.addEventListener("click", () => showView("home"));
+document.getElementById("search-back").addEventListener("click", () => showView("home"));
 searchNav.addEventListener("click", () => showView("search"));
 
 /* 发布：仅在保存成功后更新列表和展示成功页。 */
@@ -406,7 +411,8 @@ const publishForm = document.getElementById("publish-form");
 const publishError = document.getElementById("publish-error");
 const publishFields = {
   name: "物品名称", category: "物品分类", eventTime: "时间",
-  location: "地点", description: "外观特征", contact: "联系方式"
+  region: "所在区域", location: "地点", description: "外观特征",
+  contactMethod: "联系渠道", contact: "联系方式"
 };
 let publishType = "lost";
 let editingId = null;

@@ -68,9 +68,9 @@
 
       <section id="search-view" hidden>
         <main class="content search-content">
+          <button id="search-back" class="detail-back" type="button">‹ 返回首页</button>
           <header class="search-intro">
             <h1>搜索失物招领</h1>
-            <p>输入物品名称、特征或地点，快速找到相关信息。</p>
           </header>
 
           <form id="search-form" class="search-panel">
@@ -93,7 +93,7 @@
                 <select id="search-category"><option value="">全部类别</option></select>
               </div>
               <div><label for="search-region">物品地点</label><select id="search-region">
-                <option value="">全部地点</option><option value="teaching">教学区（含实验楼）</option><option value="library">图书馆</option><option value="canteen">食堂</option><option value="dorm">宿舍区</option><option value="sports">操场</option>
+                <option value="">全部地点</option><option value="teaching">教学区（含实验楼）</option><option value="library">图书馆</option><option value="canteen">食堂</option><option value="dorm">宿舍区</option><option value="sports">操场</option><option value="other">其他区域</option>
               </select></div>
               <div><label for="search-days">时间范围</label><select id="search-days">
                 <option value="">不限时间</option><option value="7">最近7天</option><option value="30">最近30天</option>
@@ -114,16 +114,17 @@
       <section id="publish-view" hidden>
         <main class="content publish-content">
           <button id="publish-back" class="detail-back" type="button">‹ 返回首页</button>
-          <div class="section-heading"><h2 id="publish-heading">发布信息</h2></div>
+          <header class="publish-intro"><h2 id="publish-heading">发布信息</h2></header>
           <form id="publish-form" class="publish-form" novalidate>
             <fieldset class="publish-type">
-              <legend>你要发布什么？</legend>
+              <legend>发布类型</legend>
               <div class="publish-types">
-                <label><input type="radio" name="publish-type" value="lost" checked><span>我丢了 · 寻物</span></label>
-                <label><input type="radio" name="publish-type" value="found"><span>我捡到 · 招领</span></label>
+                <label><input type="radio" name="publish-type" value="lost" checked><span>寻物启事</span></label>
+                <label><input type="radio" name="publish-type" value="found"><span>失物招领</span></label>
               </div>
             </fieldset>
             <div class="publish-fields">
+              <h3 class="publish-group-heading">物品信息</h3>
               <div class="publish-field">
                 <label for="publish-name">物品名称<span>*</span></label>
                 <input id="publish-name" name="name" required maxlength="80" placeholder="如：黑色折叠伞" aria-describedby="error-name">
@@ -142,6 +143,13 @@
                 <p id="error-eventTime" class="field-error" hidden></p>
               </div>
               <div class="publish-field">
+                <label for="publish-region">所在区域<span>*</span></label>
+                <select id="publish-region" name="region" required aria-describedby="error-region">
+                  <option value="">请选择所在区域</option><option value="teaching">教学区（含实验楼）</option><option value="library">图书馆</option><option value="canteen">食堂</option><option value="dorm">宿舍区</option><option value="sports">操场</option><option value="other">其他区域</option>
+                </select>
+                <p id="error-region" class="field-error" hidden></p>
+              </div>
+              <div class="publish-field publish-wide">
                 <label for="publish-location"><span id="publish-location-label">丢失地点</span><span>*</span></label>
                 <input id="publish-location" name="location" required maxlength="120" placeholder="如：第三教学楼 203" aria-describedby="error-location">
                 <p id="error-location" class="field-error" hidden></p>
@@ -151,16 +159,28 @@
                 <textarea id="publish-description" name="description" required maxlength="1000" rows="3" placeholder="颜色、样式等可帮助核对的信息" aria-describedby="error-description"></textarea>
                 <p id="error-description" class="field-error" hidden></p>
               </div>
-              <div class="publish-field publish-wide">
+              <h3 class="publish-group-heading contact-group-heading">联系信息</h3>
+              <div class="publish-field">
+                <label for="publish-contactMethod">联系渠道<span>*</span></label>
+                <select id="publish-contactMethod" name="contactMethod" required aria-describedby="error-contactMethod">
+                  <option value="">请选择联系渠道</option><option>QQ</option><option>微信</option><option>电话</option><option>邮箱</option><option>其他</option>
+                </select>
+                <p id="error-contactMethod" class="field-error" hidden></p>
+              </div>
+              <div class="publish-field">
                 <label for="publish-contact">联系方式<span>*</span></label>
                 <input id="publish-contact" name="contact" required maxlength="200" placeholder="如 QQ、邮箱或校内服务台" aria-describedby="error-contact">
                 <p id="error-contact" class="field-error" hidden></p>
               </div>
             </div>
-            <p class="publish-note">请勿公开校园卡完整号码、住址等敏感信息；联系与归还前先核对物品特征。</p>
             <p id="publish-error" class="field-error" role="alert" hidden></p>
-            <button id="publish-submit" class="contact-button" type="submit">发布信息</button>
-            <button id="edit-cancel" class="secondary-button" type="button" hidden>取消修改</button>
+            <div class="publish-footer">
+              <p class="publish-note">联系方式将公开，请勿填写完整证件号码或住址。</p>
+              <div class="publish-actions">
+                <button id="edit-cancel" class="secondary-button" type="button" hidden>取消修改</button>
+                <button id="publish-submit" class="contact-button" type="submit">发布信息</button>
+              </div>
+            </div>
           </form>
         </main>
       </section>
