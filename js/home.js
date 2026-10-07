@@ -1,6 +1,34 @@
 "use strict";
 
 const STORAGE_KEY = "shiguang_items_v1";
+const VIEWS_KEY = "shiguang_views_v1";
+const viewCounts = new Map();
+try {
+  const saved = JSON.parse(localStorage.getItem(VIEWS_KEY) || "[]");
+  if (Array.isArray(saved)) saved.forEach(entry => {
+    // 兼容旧版每条信息只记录一次的浏览记录。
+    if (typeof entry === "string") viewCounts.set(entry, 1);
+    else if (Array.isArray(entry) && typeof entry[0] === "string" && Number.isSafeInteger(entry[1]) && entry[1] >= 0) {
+      viewCounts.set(entry[0], entry[1]);
+    }
+  });
+} catch { /* 存储不可用时保留本次访问记录 */ }
+
+function viewCount(item) {
+  const stored = Number(item.views);
+  const base = Number.isFinite(stored) && stored > 0 ? Math.floor(stored) : 0;
+  return base + (viewCounts.get(item.id) || 0);
+}
+
+function recordView(item) {
+  if (typeof item.id !== "string") return;
+  viewCounts.set(item.id, (viewCounts.get(item.id) || 0) + 1);
+  try { localStorage.setItem(VIEWS_KEY, JSON.stringify([...viewCounts])); }
+  catch { /* 不影响查看详情，当前页面仍可按浏览次数排序 */ }
+  renderHome();
+  renderSearch();
+  renderMine();
+}
 
 const demoItems = [
   {
@@ -74,6 +102,7 @@ let currentContact = "";
 let contactVersion = 0;
 
 function openDetail(item) {
+  recordView(item);
   const isLost = item.type === "lost";
   const gallery = document.getElementById("detail-photos");
   const photos = itemPhotos(item);
@@ -192,10 +221,31 @@ function createCard(item) {
       "span",
       "card-meta",
       `${item.location || "地点未填"} · ${displayTime(item.eventTime)}`
-    )
+    ),
+    createViewBadge(item)
   );
   card.addEventListener("click", () => openDetail(item));
   return card;
+}
+
+function createViewBadge(item) {
+  const badge = makeElement("span", "card-views", "");
+  badge.setAttribute("aria-label", `浏览 ${viewCount(item)} 次`);
+  const icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  icon.setAttribute("viewBox", "0 0 24 24");
+  icon.setAttribute("fill", "none");
+  icon.setAttribute("stroke", "currentColor");
+  icon.setAttribute("stroke-width", "1.7");
+  icon.setAttribute("aria-hidden", "true");
+  const outline = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  outline.setAttribute("d", "M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z");
+  const pupil = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+  pupil.setAttribute("cx", "12");
+  pupil.setAttribute("cy", "12");
+  pupil.setAttribute("r", "3");
+  icon.append(outline, pupil);
+  badge.append(icon, makeElement("span", "", String(viewCount(item))));
+  return badge;
 }
 
 function createPhotoPlaceholder(category) {
@@ -268,18 +318,35 @@ function filterItems(source, keyword, type, category = "", options = {}) {
   });
 }
 
-function sortSearchItems(source, order = "published") {
-  const timestamp = item => order === "published"
-    ? new Date(item.createdAt).getTime() : eventTimestamp(item.eventTime);
+function keywordScore(item, searchKeyword) {
+  const query = String(searchKeyword || "").trim().toLocaleLowerCase();
+  if (!query) return 0;
+  const name = String(item.name || "").toLocaleLowerCase();
+  if (name === query) return 4;
+  if (name.includes(query)) return 3;
+  if (String(item.category || "").toLocaleLowerCase().includes(query)) return 2;
+  return [item.description, item.location].some(value => String(value || "").toLocaleLowerCase().includes(query)) ? 1 : 0;
+}
+
+function sortSearchItems(source, order = "default", searchKeyword = "") {
+  const timestamp = item => new Date(item.createdAt).getTime();
   return [...source].sort((a, b) => {
+    if (order === "default") {
+      const relevance = keywordScore(b, searchKeyword) - keywordScore(a, searchKeyword);
+      if (relevance) return relevance;
+    }
+    if (order === "views") {
+      const views = viewCount(b) - viewCount(a);
+      if (views) return views;
+    }
     const left = timestamp(a), right = timestamp(b);
     if (!Number.isFinite(left)) return Number.isFinite(right) ? 1 : 0;
     if (!Number.isFinite(right)) return -1;
-    return order === "event-asc" ? left - right : right - left;
+    return right - left;
   });
 }
 
-window.ShiguangSearch = { filterItems, sortSearchItems, matchesRegion, eventTimestamp };
+window.ShiguangSearch = { filterItems, sortSearchItems, matchesRegion, eventTimestamp, keywordScore, viewCount };
 
 const homeList = document.getElementById("item-list");
 const searchList = document.getElementById("search-results");
@@ -331,7 +398,7 @@ function renderHome() {
 function renderSearch() {
   refreshCategoryOptions();
   const results = sortSearchItems(filterItems(items, keyword, selectedType, selectedCategory,
-    { region: regionSelect.value, days: daysSelect.value }), sortSelect.value);
+    { region: regionSelect.value, days: daysSelect.value }), sortSelect.value, keyword);
 
   if (results.length === 0) {
     const empty = makeElement("div", "empty-result", "");
@@ -419,7 +486,7 @@ function openSearchWithType(type) {
   categorySelect.value = "";
   regionSelect.value = "";
   daysSelect.value = "";
-  sortSelect.value = "published";
+  sortSelect.value = "default";
 
   const filterButton = document.querySelector(
     `.type-filters button[data-type="${type}"]`
