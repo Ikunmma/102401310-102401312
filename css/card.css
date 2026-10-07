@@ -1,0 +1,25 @@
+/* 物品列表：精简内容并统一字号 */
+:is(#home-view, #search-view, #mine-view) .item-card {
+  min-height: 180px;
+  padding: 24px;
+  border-radius: 18px;
+}
+:is(#home-view, #search-view, #mine-view) .card-type {
+  font-size: 16px;
+  padding: 6px 12px;
+}
+:is(#home-view, #search-view, #mine-view) .card-name {
+  margin: 22px 0 18px;
+  font-size: 24px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+:is(#home-view, #search-view, #mine-view) .card-meta {
+  margin-top: auto;
+  padding-top: 0;
+  border-top: 0;
+  font-size: 17px;
+  line-height: 1.6;
+  color: #526b73;
+  overflow-wrap: anywhere;
+}
