@@ -75,6 +75,20 @@ let contactVersion = 0;
 
 function openDetail(item) {
   const isLost = item.type === "lost";
+  const gallery = document.getElementById("detail-photos");
+  const photos = itemPhotos(item);
+  gallery.hidden = !photos.length;
+  gallery.replaceChildren(...photos.map((source, index) => {
+    const button = makeElement("button", "detail-photo", "");
+    button.type = "button";
+    button.setAttribute("aria-label", `放大第${index + 1}张物品照片`);
+    button.append(photoImage(source, `物品照片${index + 1}`));
+    button.addEventListener("click", () => {
+      document.getElementById("photo-full").src = source;
+      document.getElementById("photo-dialog").showModal();
+    });
+    return button;
+  }));
 
   document.getElementById("detail-kind").textContent =
     isLost ? "寻物启事" : "招领信息";
@@ -158,6 +172,9 @@ function createCard(item) {
   const card = document.createElement("button");
   card.type = "button";
   card.className = "item-card";
+  const cover = itemPhotos(item)[0];
+  if (cover) card.append(photoImage(cover, "", "card-photo"));
+  else card.append(createPhotoPlaceholder(item.category));
 
   const top = makeElement("span", "card-top", "");
   top.append(
@@ -179,6 +196,33 @@ function createCard(item) {
   );
   card.addEventListener("click", () => openDetail(item));
   return card;
+}
+
+function createPhotoPlaceholder(category) {
+  const placeholder = makeElement("span", "card-photo card-photo-placeholder", "");
+  placeholder.setAttribute("aria-hidden", "true");
+  const paths = {
+    "证件卡片": ["M4 5h16v14H4z", "M8 9h3v3H8z", "M14 9h3M14 12h3M8 16h9"],
+    "钥匙": ["M14 10a4 4 0 1 0 0 .1", "M11 13 4 20H2v-3l7-7", "M5 16l3 3"],
+    "电子设备": ["M7 2h10v20H7z", "M10 18h4"],
+    "书籍文具": ["M12 5v16", "M12 5C8 2 4 3 2 4v15c3-1 7-1 10 2 3-3 7-3 10-2V4c-2-1-6-2-10 1z"],
+    "衣物配饰": ["m8 3-6 5 4 4 2-2v11h8V10l2 2 4-4-6-5c0 4-8 4-8 0z"],
+    "生活用品": ["M3 12a9 9 0 0 1 18 0H3z", "M12 12v7a2 2 0 0 0 4 0"]
+  };
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("viewBox", "0 0 24 24");
+  svg.setAttribute("fill", "none");
+  svg.setAttribute("stroke", "currentColor");
+  svg.setAttribute("stroke-width", "1.5");
+  svg.setAttribute("stroke-linecap", "round");
+  svg.setAttribute("stroke-linejoin", "round");
+  for (const d of paths[category] || ["m3 7 9-5 9 5v10l-9 5-9-5z", "m3 7 9 5 9-5M12 12v10"]) {
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path.setAttribute("d", d);
+    svg.append(path);
+  }
+  placeholder.append(svg);
+  return placeholder;
 }
 
 /* 搜索 */
@@ -417,6 +461,97 @@ const publishFields = {
 let publishType = "lost";
 let editingId = null;
 let publishDraft = null;
+let publishImages = [];
+let photosBusy = false;
+
+function itemPhotos(item) {
+  return Array.isArray(item.images) ? item.images.filter(source =>
+    typeof source === "string" && /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(source)
+  ).slice(0, 3) : [];
+}
+
+function photoImage(source, alt, className = "") {
+  const image = document.createElement("img");
+  image.src = source;
+  image.alt = alt;
+  image.className = className;
+  return image;
+}
+
+function renderPhotoPreviews() {
+  document.getElementById("photo-previews").replaceChildren(...publishImages.map((source, index) => {
+    const preview = makeElement("div", "photo-preview", "");
+    const remove = makeElement("button", "photo-remove", "移除");
+    remove.type = "button";
+    remove.disabled = photosBusy;
+    remove.setAttribute("aria-label", `移除第${index + 1}张照片`);
+    remove.addEventListener("click", () => { publishImages.splice(index, 1); renderPhotoPreviews(); });
+    preview.append(photoImage(source, `物品照片${index + 1}`), remove);
+    return preview;
+  }));
+  document.querySelector(".photo-upload").hidden = publishImages.length >= 3;
+}
+
+async function compressPhoto(file) {
+  if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) throw new Error("请选择 JPG、PNG 或 WebP 图片。");
+  if (file.size > 10 * 1024 * 1024) throw new Error("每张照片不能超过10MB。");
+  const source = URL.createObjectURL(file);
+  try {
+    const image = new Image();
+    image.src = source;
+    await image.decode();
+    if (!image.naturalWidth || !image.naturalHeight) throw new Error();
+    const scale = Math.min(1, 1200 / Math.max(image.naturalWidth, image.naturalHeight));
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+    canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+    const context = canvas.getContext("2d");
+    context.fillStyle = "white";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.drawImage(image, 0, 0, canvas.width, canvas.height);
+    const compressed = canvas.toDataURL("image/jpeg", 0.75);
+    if (compressed.length > 700000) throw new Error("照片压缩后仍过大，请选择更小的图片。");
+    return compressed;
+  } finally { URL.revokeObjectURL(source); }
+}
+
+document.getElementById("publish-images").addEventListener("change", async event => {
+  if (photosBusy) return;
+  const files = [...event.target.files];
+  event.target.value = "";
+  const feedback = document.getElementById("photo-feedback");
+  if (!files.length) return;
+  feedback.hidden = false;
+  if (files.length + publishImages.length > 3) {
+    feedback.textContent = "最多上传3张照片，请重新选择。";
+    return;
+  }
+  photosBusy = true;
+  event.target.disabled = true;
+  document.getElementById("publish-submit").disabled = true;
+  feedback.textContent = "正在处理照片……";
+  renderPhotoPreviews();
+  try {
+    const added = [];
+    for (const file of files) added.push(await compressPhoto(file));
+    publishImages.push(...added);
+    feedback.hidden = true;
+  } catch (error) {
+    feedback.textContent = error.message || "图片无法读取，请重新选择。";
+  } finally {
+    photosBusy = false;
+    event.target.disabled = false;
+    document.getElementById("publish-submit").disabled = false;
+    renderPhotoPreviews();
+  }
+});
+document.getElementById("photo-close").addEventListener("click", () => document.getElementById("photo-dialog").close());
+document.addEventListener("click", event => {
+  if (photosBusy && event.target.closest("button, .publish-types")) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+}, true);
 
 function setPublishType(type) {
   publishType = type;
@@ -437,12 +572,16 @@ function setEditMode(editing) {
 }
 
 function leaveEdit() {
+  if (photosBusy) return;
   editingId = null;
   publishForm.reset();
   for (const name of Object.keys(publishFields)) {
     document.getElementById(`publish-${name}`).value = publishDraft?.[name] || "";
   }
   setPublishType(publishDraft?.type || "lost");
+  publishImages = [...(publishDraft?.images || [])];
+  renderPhotoPreviews();
+  document.getElementById("photo-feedback").hidden = true;
   publishDraft = null;
   setEditMode(false);
 }
@@ -477,18 +616,22 @@ function showMineFeedback(message, error = false) {
 }
 
 function editItem(id) {
+  if (photosBusy) { showMineFeedback("照片正在处理，请稍后再编辑。", true); return; }
   let record;
   try { record = readOwnedRecord(id).record; } catch {
     showMineFeedback("无法读取你的发布记录，请检查本地存储或刷新页面后重试。", true);
     return;
   }
   if (!editingId) {
-    publishDraft = { type: publishType };
+    publishDraft = { type: publishType, images: [...publishImages] };
     for (const name of Object.keys(publishFields)) {
       publishDraft[name] = document.getElementById(`publish-${name}`).value;
     }
   }
   editingId = id;
+  publishImages = itemPhotos(record);
+  renderPhotoPreviews();
+  document.getElementById("photo-feedback").hidden = true;
   for (const name of Object.keys(publishFields)) {
     const value = String(record[name] || "");
     document.getElementById(`publish-${name}`).value = name === "eventTime"
@@ -530,6 +673,7 @@ Object.keys(publishFields).forEach(name => {
 
 publishForm.addEventListener("submit", event => {
   event.preventDefault();
+  if (photosBusy) return;
   publishError.hidden = true;
   const values = {};
   let firstInvalid;
@@ -546,12 +690,13 @@ publishForm.addEventListener("submit", event => {
     firstInvalid.focus();
     return;
   }
+  values.images = [...publishImages];
   if (editingId) {
     let updated;
     try {
       updated = updateOwnedRecord(editingId, { ...values, type: publishType });
     } catch {
-      publishError.textContent = "修改保存失败，请检查本地存储及发布记录后重试。填写的内容已保留。";
+      publishError.textContent = "修改保存失败，本地存储可能已满，请减少照片后重试。填写的内容已保留。";
       publishError.hidden = false;
       return;
     }
@@ -570,7 +715,7 @@ publishForm.addEventListener("submit", event => {
     item = { ...values, id: uniqueId(), type: publishType, status: "active", ownerId, createdAt: new Date().toISOString() };
     localStorage.setItem(STORAGE_KEY, JSON.stringify([...readSavedItems(), item]));
   } catch {
-    publishError.textContent = "保存失败，请检查浏览器是否允许本地存储后重试。填写的内容已保留。";
+    publishError.textContent = "保存失败，本地存储可能已满或不可用，请减少照片后重试。填写的内容已保留。";
     publishError.hidden = false;
     return;
   }
@@ -580,6 +725,9 @@ publishForm.addEventListener("submit", event => {
   document.getElementById("publish-success-message").textContent =
     `你的${publishType === "lost" ? "寻物" : "招领"}信息已经加入校园信息列表。`;
   publishForm.reset();
+  publishImages = [];
+  renderPhotoPreviews();
+  document.getElementById("photo-feedback").hidden = true;
   setPublishType("lost");
   showView("publish-success");
 });

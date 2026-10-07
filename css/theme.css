@@ -173,6 +173,30 @@ button:focus-visible { outline: 3px solid var(--brand); outline-offset: 3px; }
   .publish-actions .contact-button, .publish-actions .secondary-button { min-width: 0; flex: 1; }
 }
 .view-all-button { flex: none; padding: 10px 0 10px 16px; border: 0; background: transparent; color: var(--brand); font: inherit; font-size: 20px; font-weight: 600; cursor: pointer; }
+.photo-previews { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.photo-preview { position: relative; margin-bottom: 16px; }
+.photo-preview img { display: block; width: 100%; height: 180px; object-fit: cover; border-radius: 12px; background: #f0f4f4; }
+.photo-remove { position: absolute; right: 10px; bottom: 10px; padding: 7px 14px; border: 0; border-radius: 8px; background: white; color: var(--ink); font: inherit; font-size: 18px; cursor: pointer; }
+#publish-view .photo-upload { display: inline-flex; align-items: center; justify-content: center; width: 180px; min-height: 64px; border: 1px dashed var(--brand); border-radius: 12px; color: var(--brand); background: #f0f8f5; cursor: pointer; }
+#publish-view .photo-upload[hidden] { display: none; }
+#publish-images:focus-visible { position: static; width: 100%; height: auto; clip: auto; }
+.card-photo { display: block; width: 100%; height: 180px; object-fit: cover; border-radius: 12px; margin-bottom: 20px; }
+.card-photo-placeholder { display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #edf5f2, #f4f7f7); color: #80a69b; }
+.card-photo-placeholder svg { width: 68px; height: 68px; }
+.detail-photos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; padding: 24px 32px 0; }
+.detail-photos[hidden] { display: none; }
+.detail-photo { padding: 0; overflow: hidden; border: 1px solid var(--line); border-radius: 12px; background: #f0f4f4; cursor: zoom-in; }
+.detail-photo img { display: block; width: 100%; height: 220px; object-fit: contain; }
+.photo-dialog { width: min(960px, 92vw); max-height: 90vh; padding: 20px; border: 0; border-radius: 18px; }
+.photo-dialog::backdrop { background: rgba(16,36,40,.75); }
+.photo-dialog img { display: block; width: 100%; max-height: 72vh; object-fit: contain; margin-top: 16px; }
+@media (max-width: 600px) {
+  .photo-previews, .detail-photos { gap: 8px; }
+  .photo-preview img { height: 110px; }
+  .detail-photos { padding: 20px 20px 0; }
+  .detail-photo img { height: 130px; }
+  .photo-remove { right: 4px; bottom: 4px; padding: 5px 8px; font-size: 16px; }
+}
 .view-all-button:hover { text-decoration: underline; }
 .search-extra-filters { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: 22px; }
 .search-extra-filters label { display: block; margin-bottom: 10px; font-size: 20px; font-weight: 600; }

@@ -159,6 +159,13 @@
                 <textarea id="publish-description" name="description" required maxlength="1000" rows="3" placeholder="颜色、样式等可帮助核对的信息" aria-describedby="error-description"></textarea>
                 <p id="error-description" class="field-error" hidden></p>
               </div>
+              <div class="publish-field publish-wide">
+                <label for="publish-images">物品照片（选填，最多3张）</label>
+                <div id="photo-previews" class="photo-previews"></div>
+                <label class="photo-upload" for="publish-images">＋ 添加照片</label>
+                <input id="publish-images" class="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp" multiple>
+                <p id="photo-feedback" class="field-error" role="status" hidden></p>
+              </div>
               <h3 class="publish-group-heading contact-group-heading">联系信息</h3>
               <div class="publish-field">
                 <label for="publish-contactMethod">联系渠道<span>*</span></label>
@@ -230,6 +237,7 @@
             <p id="detail-published" class="detail-published"></p>
           </header>
 
+              <div id="detail-photos" class="detail-photos" hidden></div>
               <div class="detail-description">
                 <h2>外观特征</h2>
                 <p id="detail-description"></p>
@@ -250,6 +258,10 @@
       </section>
     </div>
 
+    <dialog id="photo-dialog" class="photo-dialog" aria-label="查看物品照片">
+      <button id="photo-close" type="button" class="secondary-button">关闭</button>
+      <img id="photo-full" alt="物品照片">
+    </dialog>
     <nav class="bottom-nav" aria-label="主导航">
       <div class="nav-brand" aria-label="拾光校园">
         <span class="brand-mark">拾</span>
