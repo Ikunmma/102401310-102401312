@@ -87,9 +87,19 @@
                 <button type="button" data-type="lost" aria-pressed="false">寻物</button>
               </div>
             </div>
-            <div class="category-filter">
-              <label for="search-category">物品分类</label>
-              <select id="search-category"><option value="">全部分类</option></select>
+            <div class="search-extra-filters">
+              <div><label for="search-category">物品类别</label>
+                <select id="search-category"><option value="">全部类别</option></select>
+              </div>
+              <div><label for="search-region">物品地点</label><select id="search-region">
+                <option value="">全部地点</option><option value="teaching">教学区（含实验楼）</option><option value="library">图书馆</option><option value="canteen">食堂</option><option value="dorm">宿舍区</option><option value="sports">操场</option>
+              </select></div>
+              <div><label for="search-days">时间范围</label><select id="search-days">
+                <option value="">不限时间</option><option value="7">最近7天</option><option value="30">最近30天</option>
+              </select></div>
+              <div><label for="search-sort">排序方式</label><select id="search-sort">
+                <option value="published">最新发布</option><option value="event-desc">时间从近到远</option><option value="event-asc">时间从远到近</option>
+              </select></div>
             </div>
           </form>
 
