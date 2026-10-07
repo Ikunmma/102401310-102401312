@@ -380,10 +380,18 @@ function openSearchWithType(type) {
   showView("search");
 }
 
-document.querySelectorAll("[data-home-type]").forEach(button => {
+document.querySelectorAll("[data-publish-type]").forEach(button => {
   button.addEventListener("click", () => {
-    openSearchWithType(button.dataset.homeType);
+    if (editingId) leaveEdit();
+    setEditMode(false);
+    setPublishType(button.dataset.publishType);
+    showView("publish");
+    document.getElementById("publish-name").focus();
   });
+});
+
+document.getElementById("home-view-all").addEventListener("click", () => {
+  openSearchWithType("all");
 });
 
 document.getElementById("detail-back").addEventListener("click", () => {

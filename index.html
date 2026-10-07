@@ -23,7 +23,7 @@
 
         <main class="content">
           <div class="home-shortcuts" aria-label="快捷浏览">
-            <button class="shortcut-card" data-home-type="found" type="button">
+            <button class="shortcut-card" data-publish-type="lost" type="button">
               <span class="shortcut-icon" aria-hidden="true">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search">
                   <path d="m21 21-4.34-4.34"/>
@@ -31,11 +31,11 @@
                 </svg>
               </span>
               <span class="shortcut-copy">
-                <strong>查看招领信息</strong>
+                <strong>我丢了东西</strong>
               </span>
             </button>
 
-            <button class="shortcut-card" data-home-type="lost" type="button">
+            <button class="shortcut-card" data-publish-type="found" type="button">
               <span class="shortcut-icon shortcut-icon-orange" aria-hidden="true">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-package-search">
                   <path d="M12 22V12"/>
@@ -47,7 +47,7 @@
                 </svg>
               </span>
               <span class="shortcut-copy">
-                <strong>查看寻物信息</strong>
+                <strong>我捡到东西</strong>
               </span>
             </button>
           </div>
@@ -55,6 +55,7 @@
           <section id="home-news" class="home-news">
             <div class="section-heading">
               <h2>最新发布</h2>
+              <button id="home-view-all" class="view-all-button" type="button">查看全部 →</button>
             </div>
 
             <div id="item-list" class="item-list"></div>

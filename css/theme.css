@@ -125,6 +125,8 @@ button:focus-visible { outline: 3px solid var(--brand); outline-offset: 3px; }
 }
 
 /* 联系方式直接展示，复制反馈保持清楚的大字。 */
+.view-all-button { flex: none; padding: 10px 0 10px 16px; border: 0; background: transparent; color: var(--brand); font: inherit; font-size: 20px; font-weight: 600; cursor: pointer; }
+.view-all-button:hover { text-decoration: underline; }
 .search-extra-filters { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: 22px; }
 .search-extra-filters label { display: block; margin-bottom: 10px; font-size: 20px; font-weight: 600; }
 .search-extra-filters select { width: 100%; min-height: 60px; padding: 14px; border: 1px solid var(--line); border-radius: 12px; background: white; color: var(--ink); font: inherit; font-size: 18px; }
