@@ -38,17 +38,8 @@
 #search-results .card-views svg { width: 15px; height: 15px; }
 #search-view .page-note { margin: 15px 0 0; font-size: 12px; color: #93998f; }
 #search-view .search-history { border-color: #e2e9dc; background: #fffef7; }
-@media (min-width: 768px) {
-  .app:has(#search-view:not([hidden])) .bottom-nav { width: calc(100% - 132px); max-width: 1100px; margin: 0 auto 0 54px; padding: 0; height: 78px; }
-  .app:has(#search-view:not([hidden])) .brand-mark { width: 35px; height: 35px; }
-  .app:has(#search-view:not([hidden])) .brand-name { font-size: 25px; }
-  .app:has(#search-view:not([hidden])) .nav-emblem { width: 39px; height: 39px; margin-left: 4px; }
-  .app:has(#search-view:not([hidden])) .nav-item { min-width: 60px; padding: 0 8px; font-size: 18px; }
-  .app:has(#search-view:not([hidden])) .nav-search { width: 170px; height: 34px; margin-left: 13px; }
-}
-@media (min-width: 1232px) {
-  #search-view .search-content, .app:has(#search-view:not([hidden])) .bottom-nav { margin-left: auto; margin-right: auto; }
-}
+
+
 @media (max-width: 767px) {
   #search-view .search-content { width: calc(100% - 40px); margin: 0 20px; padding-top: 8px; }
   #search-view .search-extra-filters { grid-template-columns: repeat(2,minmax(0,1fr)); }

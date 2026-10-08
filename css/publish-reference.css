@@ -42,20 +42,8 @@
 #publish-view .similar-panel h3 { font-size: 17px; }
 #publish-view .similar-title strong { font-size: 15px; }
 #publish-view .similar-meta, #publish-view .similar-link { font-size: 13px; }
-@media (min-width: 700px) {
-  .app:has(#publish-view:not([hidden])) .bottom-nav { width: calc(100% - 86px); max-width: 1100px; margin: 0 auto 0 34px; height: 64px; padding: 0; }
-  .app:has(#publish-view:not([hidden])) .brand-mark { width: 29px; height: 29px; border-radius: 8px; font-size: 20px; }
-  .app:has(#publish-view:not([hidden])) .brand-name { font-size: 21px; }
-  .app:has(#publish-view:not([hidden])) .nav-emblem { width: 32px; height: 32px; margin-left: 0; padding-left: 7px; }
-  .app:has(#publish-view:not([hidden])) .nav-item { min-width: 47px; height: 48px; padding: 0 6px; font-size: 15px; }
-  .app:has(#publish-view:not([hidden])) .nav-item.active::after { bottom: 12px; width: 20px; left: calc(50% - 10px); height: 2px; }
-  .app:has(#publish-view:not([hidden])) .nav-search { width: 138px; height: 28px; margin-left: 12px; padding: 0 8px; gap: 5px; }
-  .app:has(#publish-view:not([hidden])) .nav-search input { font-size: 11px; }
-  .app:has(#publish-view:not([hidden])) .nav-search svg { width: 14px; height: 14px; }
-}
-@media (min-width: 1186px) {
-  #publish-view .publish-content, .app:has(#publish-view:not([hidden])) .bottom-nav { margin-left: auto; margin-right: auto; }
-}
+
+
 @media (max-width: 699px) {
   #publish-view .publish-content { width: calc(100% - 40px); margin: 0 20px; padding-top: 8px; }
   #publish-view .publish-form { padding: 18px 16px; }

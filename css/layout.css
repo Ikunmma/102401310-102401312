@@ -1,0 +1,87 @@
+/* 全站以首页为尺寸基准。导航使用 reference.css 的同一套规则。 */
+html { scrollbar-gutter: stable; }
+:root {
+  --page-width: calc(100% - 144px);
+  --page-max-width: 1064px;
+  --page-left: 44px;
+  --page-heading-size: 24px;
+  --field-size: 17px;
+  --field-height: 46px;
+}
+:is(#home-view, #search-view, #publish-view, #publish-success-view, #mine-view, #detail-view) > .content {
+  width: var(--page-width);
+  max-width: var(--page-max-width);
+  margin: 0 auto 0 var(--page-left);
+  padding: 20px 0 34px;
+}
+#home-view > .content { padding-bottom: 10px; }
+#detail-view { background: transparent; min-height: 0; }
+:is(#search-view, #publish-view, #mine-view, #detail-view) .detail-back {
+  min-height: 26px;
+  margin: 0 0 18px;
+  padding: 0;
+  font-size: 15px;
+  color: #536d59;
+}
+:is(#search-view .search-intro, #publish-view .publish-intro) {
+  min-height: 146px;
+  margin-bottom: 20px;
+  padding: 28px 30px;
+  border-radius: 20px;
+}
+:is(#search-view .search-intro h1, #publish-view .publish-intro h2) { font-size: 32px; }
+.publish-emblem, .search-emblem { width: 60px; height: 60px; top: 14px; right: 18px; }
+#publish-view .publish-form { padding: 24px; }
+#publish-view .publish-fields { gap: 20px 22px; }
+#publish-view .publish-type { padding-left: 110px; padding-bottom: 22px; margin-bottom: 22px; }
+#publish-view .publish-type legend { top: 11px; font-size: var(--field-size); }
+#publish-view .publish-types label { min-width: 132px; }
+#publish-view .publish-types span { padding: 9px 18px; font-size: var(--field-size); }
+#publish-view .publish-group-heading { font-size: 21px; line-height: 28px; }
+#publish-view .publish-group-heading::before { height: 18px; width: 4px; }
+#publish-view .publish-field > label { font-size: var(--field-size); line-height: 24px; margin-bottom: 7px; }
+#publish-view .publish-field input, #publish-view .publish-field select, #publish-view .publish-field textarea {
+  min-height: var(--field-height);
+  padding: 10px 14px;
+  font-size: var(--field-size);
+  line-height: 24px;
+}
+#publish-view .publish-field textarea { min-height: 96px; }
+#publish-view .photo-upload { width: 140px; min-height: var(--field-height); font-size: 16px; }
+#publish-view .publish-actions .contact-button, #publish-view .publish-actions .secondary-button {
+  min-height: var(--field-height);
+  min-width: 112px;
+  font-size: 16px;
+}
+#publish-view .publish-note { font-size: 13px; }
+:is(#home-view, #mine-view) .section-heading h2,
+#search-view .search-results-heading h2 { font-size: var(--page-heading-size); }
+:is(#home-view, #search-view, #mine-view) .item-list { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 18px; }
+#search-results .item-card, #mine-view .item-card { min-height: 323px; padding: 16px; border-radius: 19px; }
+#mine-view .card-photo { height: auto; aspect-ratio: 246 / 138; margin-bottom: 15px; }
+#mine-view .card-type { font-size: 13px; padding: 4px 9px; }
+#mine-view .card-name { font-size: 19px; margin: 16px 0 10px; }
+#mine-view .card-meta, #mine-view .card-views { font-size: 13px; }
+#mine-view .mine-filters button { font-size: 16px; min-height: 40px; }
+#mine-view .mine-heading h3 { font-size: 21px; }
+#mine-view .mine-actions > button { font-size: 14px; min-height: 44px; }
+#publish-success-view .publish-success { padding: 48px 24px; }
+@media (min-width: 1210px) {
+  :is(#home-view, #search-view, #publish-view, #publish-success-view, #mine-view, #detail-view) > .content { margin-left: auto; margin-right: auto; }
+}
+@media (max-width: 699px) {
+  #publish-view .publish-type { padding-left: 0; }
+  #publish-view .publish-type legend { position: static; }
+  #publish-view .publish-types label { min-width: 0; }
+}
+@media (max-width: 650px) {
+  :root { --page-width: calc(100% - 40px); --page-left: 20px; --page-heading-size: 23px; --field-size: 15px; }
+  :is(#home-view, #search-view, #publish-view, #publish-success-view, #mine-view, #detail-view) > .content { padding-top: 16px; }
+  :is(#home-view, #search-view, #mine-view) .item-list { grid-template-columns: 1fr; gap: 16px; }
+  :is(#search-view .search-intro, #publish-view .publish-intro) { min-height: 146px; padding: 24px; }
+  :is(#search-view .search-intro h1, #publish-view .publish-intro h2) { font-size: 27px; }
+  #publish-view .publish-form { padding: 18px 16px; }
+  #publish-view .publish-fields { gap: 16px; }
+  #search-results .item-card, #mine-view .item-card { min-height: 0; }
+  .search-emblem, .publish-emblem { width: 46px; height: 46px; top: 10px; right: 12px; }
+}
