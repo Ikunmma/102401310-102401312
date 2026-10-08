@@ -9,6 +9,7 @@ let previousView = "home";
 let currentView = "home";
 
 function showView(view) {
+  if (currentView === "publish") savePublishDraft();
   currentView = view;
   for (const name of ["home", "search", "detail", "publish", "publish-success", "mine"]) {
     document.getElementById(`${name}-view`).hidden = name !== view;
@@ -36,4 +37,5 @@ document.addEventListener("shiguang:datachange", () => { renderHome(); renderSea
 
 renderHome();
 renderSearch();
+restorePublishDraft();
 showView("home");

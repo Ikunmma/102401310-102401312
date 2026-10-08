@@ -66,6 +66,19 @@ const items = [...readSavedItems(), ...demoItems]
     String(b.createdAt || "").localeCompare(String(a.createdAt || ""))
   );
 const OWNER_KEY = "shiguang_owner_v1";
+const DRAFT_KEY = "shiguang_publish_draft_v1";
+
+function readPublishDraft() {
+  const text = localStorage.getItem(DRAFT_KEY);
+  if (!text) return null;
+  const draft = JSON.parse(text);
+  return draft && typeof draft === "object" && !Array.isArray(draft) ? draft : null;
+}
+
+function writePublishDraft(draft) {
+  if (draft) localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+  else localStorage.removeItem(DRAFT_KEY);
+}
 
 function readOwnedRecord(id) {
   const ownerId = localStorage.getItem(OWNER_KEY);
@@ -104,6 +117,7 @@ function createItem(values, type) {
 }
 
 window.ShiguangData = {
+  readPublishDraft, writePublishDraft,
   getItems: () => items.map(item => ({ ...item, images: [...itemPhotos(item)] })),
   getOwnerId: () => localStorage.getItem(OWNER_KEY),
   readOwnedRecord, createItem, updateItem: updateOwnedRecord,

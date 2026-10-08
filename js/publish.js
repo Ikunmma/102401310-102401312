@@ -12,6 +12,53 @@ let editingId = null;
 let publishDraft = null;
 let publishImages = [];
 let photosBusy = false;
+let draftTimer;
+const draftFeedback = makeElement("p", "mine-feedback", "");
+draftFeedback.hidden = true;
+draftFeedback.setAttribute("role", "status");
+publishForm.prepend(draftFeedback);
+
+function savePublishDraft() {
+  clearTimeout(draftTimer);
+  if (editingId) return;
+  const draft = { type: publishType, images: [...publishImages] };
+  for (const name of Object.keys(publishFields)) draft[name] = document.getElementById(`publish-${name}`).value;
+  const hasContent = draft.images.length || Object.keys(publishFields).some(name => draft[name].trim());
+  try {
+    ShiguangData.writePublishDraft(hasContent ? draft : null);
+    draftFeedback.hidden = true;
+  } catch {
+    draftFeedback.textContent = "草稿保存失败，本地存储可能已满或不可用，请勿关闭页面。";
+    draftFeedback.hidden = false;
+  }
+}
+
+function restorePublishDraft() {
+  let draft;
+  try { draft = ShiguangData.readPublishDraft(); }
+  catch {
+    draftFeedback.textContent = "无法读取本地草稿，请检查浏览器存储。";
+    draftFeedback.hidden = false;
+    return;
+  }
+  if (!draft) return;
+  for (const name of Object.keys(publishFields)) {
+    const value = typeof draft[name] === "string" ? draft[name] : "";
+    const input = document.getElementById(`publish-${name}`);
+    input.value = input.maxLength > 0 ? value.slice(0, input.maxLength) : value;
+  }
+  publishImages = itemPhotos(draft);
+  setPublishType(draft.type === "found" ? "found" : "lost");
+  renderPhotoPreviews();
+}
+
+publishForm.addEventListener("input", () => {
+  if (editingId) return;
+  clearTimeout(draftTimer);
+  draftTimer = setTimeout(savePublishDraft, 400);
+});
+publishForm.addEventListener("change", () => savePublishDraft());
+window.addEventListener("pagehide", savePublishDraft);
 function renderPhotoPreviews() {
   document.getElementById("photo-previews").replaceChildren(...publishImages.map((source, index) => {
     const preview = makeElement("div", "photo-preview", "");
@@ -19,7 +66,7 @@ function renderPhotoPreviews() {
     remove.type = "button";
     remove.disabled = photosBusy;
     remove.setAttribute("aria-label", `移除第${index + 1}张照片`);
-    remove.addEventListener("click", () => { publishImages.splice(index, 1); renderPhotoPreviews(); });
+    remove.addEventListener("click", () => { publishImages.splice(index, 1); renderPhotoPreviews(); savePublishDraft(); });
     preview.append(photoImage(source, `物品照片${index + 1}`), remove);
     return preview;
   }));
@@ -69,6 +116,7 @@ document.getElementById("publish-images").addEventListener("change", async event
     const added = [];
     for (const file of files) added.push(await compressPhoto(file));
     publishImages.push(...added);
+    savePublishDraft();
     feedback.hidden = true;
   } catch (error) {
     feedback.textContent = error.message || "图片无法读取，请重新选择。";
@@ -126,6 +174,7 @@ function editItem(id) {
     return;
   }
   if (!editingId) {
+    savePublishDraft();
     publishDraft = { type: publishType, images: [...publishImages] };
     for (const name of Object.keys(publishFields)) {
       publishDraft[name] = document.getElementById(`publish-${name}`).value;
@@ -218,6 +267,7 @@ publishForm.addEventListener("submit", event => {
   renderPhotoPreviews();
   document.getElementById("photo-feedback").hidden = true;
   setPublishType("lost");
+  savePublishDraft();
   showView("publish-success");
 });
 document.getElementById("publish-back").addEventListener("click", () => {
