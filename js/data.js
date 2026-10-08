@@ -30,24 +30,27 @@ function recordView(item) {
 
 const demoItems = [
   {
-    id: "demo-card", type: "found", name: "蓝色卡套 · 校园卡",
-    category: "证件卡片", description: "蓝色卡套，卡面姓名请认领时核对",
+    id: "demo-card", type: "found", name: "蓝色卡套校园卡",
+    category: "证件卡片", description: "校园卡装在蓝色透明卡套内，卡套带有挂绳。认领时请核对卡面姓名。",
+    region: "library", contactMethod: "其他",
     location: "图书馆一楼", eventTime: "2026-09-26T09:20",
-    contact: "演示信息", status: "active", ownerId: "demo",
+    contact: "演示记录，暂不提供真实联系方式", status: "active", ownerId: "demo",
     createdAt: "2026-09-26T09:20"
   },
   {
     id: "demo-umbrella", type: "lost", name: "黑色折叠伞",
-    category: "生活用品", description: "黑色三折雨伞，木纹手柄",
-    location: "第三教学楼 203", eventTime: "2026-09-25T18:00",
-    contact: "演示信息", status: "active", ownerId: "demo",
+    category: "生活用品", description: "黑色三折雨伞，木纹手柄，伞套为黑色，收起后约30厘米长。",
+    region: "teaching", contactMethod: "其他",
+    location: "第三教学楼203教室", eventTime: "2026-09-25T18:00",
+    contact: "演示记录，暂不提供真实联系方式", status: "active", ownerId: "demo",
     createdAt: "2026-09-25T18:00"
   },
   {
-    id: "demo-keys", type: "found", name: "一串宿舍钥匙",
-    category: "钥匙", description: "三把钥匙，蓝色钥匙扣",
+    id: "demo-keys", type: "found", name: "蓝色钥匙扣宿舍钥匙",
+    category: "钥匙", description: "共三把银色钥匙，挂在同一个金属钥匙圈上，带有蓝色钥匙扣。",
+    region: "canteen", contactMethod: "其他",
     location: "第二食堂门口", eventTime: "2026-09-24T12:30",
-    contact: "演示信息", status: "active", ownerId: "demo",
+    contact: "演示记录，暂不提供真实联系方式", status: "active", ownerId: "demo",
     createdAt: "2026-09-24T12:30"
   }
 ];
