@@ -54,6 +54,18 @@ function createViewBadge(item) {
 function createPhotoPlaceholder(category) {
   const placeholder = makeElement("span", "card-photo card-photo-placeholder", "");
   placeholder.setAttribute("aria-hidden", "true");
+  const illustrations = {
+    "证件卡片": "reference-card.png",
+    "生活用品": "reference-umbrella.png",
+    "钥匙": "reference-keys.png"
+  };
+  if (illustrations[category]) {
+    const illustration = document.createElement("img");
+    illustration.src = `assets/${illustrations[category]}`;
+    illustration.alt = "";
+    placeholder.append(illustration);
+    return placeholder;
+  }
   const paths = {
     "证件卡片": ["M4 5h16v14H4z", "M8 9h3v3H8z", "M14 9h3M14 12h3M8 16h9"],
     "钥匙": ["M14 10a4 4 0 1 0 0 .1", "M11 13 4 20H2v-3l7-7", "M5 16l3 3"],
