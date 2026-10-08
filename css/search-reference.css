@@ -6,7 +6,7 @@
 }
 #search-view .search-content { width: calc(100% - 132px); max-width: 1100px; margin: 0 auto 0 54px; padding: 8px 0 10px; }
 #search-back { min-height: 26px; margin: 0 0 18px; padding: 0; color: #536d59; font-size: 15px; background: transparent; }
-#search-view .search-intro { position: relative; min-height: 146px; margin: 0 0 18px; padding: 28px 30px; border-radius: 20px; overflow: hidden; background: linear-gradient(90deg,rgba(8,48,42,.79),rgba(8,48,42,.38) 48%,rgba(8,48,42,.1)),url('../assets/search-sunset.png') center 48% / cover no-repeat; box-shadow: 0 0 20px #ffffff90; }
+#search-view .search-intro { position: relative; min-height: 146px; margin: 0 0 18px; padding: 28px 30px; border-radius: 20px; overflow: hidden; background: linear-gradient(90deg,rgba(8,48,42,.79),rgba(8,48,42,.38) 48%,rgba(8,48,42,.1)),url('../assets/search-sunset.png') center 28% / cover no-repeat; box-shadow: 0 0 20px #ffffff90; }
 #search-view .search-intro h1 { margin: 0; color: #fffdf2; font-size: 32px; line-height: 1.4; text-shadow: 0 2px 4px #14382e80; }
 .search-emblem { position: absolute; width: 60px; height: 60px; top: 14px; right: 18px; border-radius: 50%; box-shadow: 0 0 8px #fff8; }
 #search-view .search-panel { padding: 16px 18px 18px; margin: 0 0 28px; border: 2px solid #ffffffb0; border-radius: 18px; background: #fffffff2; box-shadow: 0 8px 12px #7daea840; }
