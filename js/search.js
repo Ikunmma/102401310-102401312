@@ -3,7 +3,7 @@
 function eventTimestamp(value) {
   const text = String(value || "").trim();
   if (!/^\d{4}-\d{2}-\d{2}(?:[T ]\d{2}:\d{2})?$/.test(text)) return NaN;
-  return new Date(text.replace(" ", "T")).getTime();
+  return new Date(text.length === 10 ? `${text}T00:00` : text.replace(" ", "T")).getTime();
 }
 
 const regionNames = { teaching: "教学区", library: "图书馆", canteen: "食堂", dorm: "宿舍区", sports: "操场", other: "其他区域" };
@@ -29,8 +29,15 @@ function filterItems(source, keyword, type, category = "", options = {}) {
 
     const categoryMatches = !category || String(item.category || "").trim() === category;
     const time = eventTimestamp(item.eventTime);
-    const timeMatches = !options.days || (Number.isFinite(time) &&
+    let timeMatches = !options.days || options.days === "custom" || (Number.isFinite(time) &&
       time >= now - Number(options.days) * 86400000 && time <= now);
+    if (options.days === "custom" && (options.startDate || options.endDate)) {
+      const start = options.startDate ? eventTimestamp(options.startDate) : -Infinity;
+      const end = options.endDate ? new Date(`${options.endDate}T00:00`) : null;
+      if (end) end.setDate(end.getDate() + 1);
+      const endExclusive = end ? end.getTime() : Infinity;
+      timeMatches = Number.isFinite(time) && time >= start && time < endExclusive;
+    }
     return typeMatches && categoryMatches && searchableText.includes(query) &&
       (!options.region || (item.region ? item.region === options.region : matchesRegion(item.location, options.region))) && timeMatches;
   });
@@ -71,6 +78,8 @@ const searchInput = document.getElementById("search-input");
 const categorySelect = document.getElementById("search-category");
 const regionSelect = document.getElementById("search-region");
 const daysSelect = document.getElementById("search-days");
+const startDateInput = document.getElementById("search-start-date");
+const endDateInput = document.getElementById("search-end-date");
 const sortSelect = document.getElementById("search-sort");
 const standardCategories = ["证件卡片", "钥匙", "电子设备", "生活用品", "书籍文具", "衣物配饰", "其他物品"];
 
@@ -155,9 +164,23 @@ document.getElementById("clear-search-history").addEventListener("click", () => 
 });
 renderSearchHistory();
 function renderSearch() {
+  const custom = daysSelect.value === "custom";
+  document.getElementById("search-date-range").hidden = !custom;
+  const invalidDates = custom && ((!startDateInput.validity.valid || !endDateInput.validity.valid) ||
+    (startDateInput.value && endDateInput.value && startDateInput.value > endDateInput.value));
+  const dateError = document.getElementById("search-date-error");
+  dateError.hidden = !invalidDates;
+  dateError.textContent = invalidDates ? "请选择有效日期，开始日期不能晚于结束日期。" : "";
+  for (const input of [startDateInput, endDateInput]) input.setAttribute("aria-invalid", String(Boolean(invalidDates)));
+  if (invalidDates) {
+    searchList.replaceChildren();
+    summary.textContent = "请调整日期范围";
+    return;
+  }
   refreshCategoryOptions();
   const results = sortSearchItems(filterItems(ShiguangData.getItems(), keyword, selectedType, selectedCategory,
-    { region: regionSelect.value, days: daysSelect.value }), sortSelect.value, keyword);
+    { region: regionSelect.value, days: daysSelect.value,
+      startDate: startDateInput.value, endDate: endDateInput.value }), sortSelect.value, keyword);
 
   if (results.length === 0) {
     const empty = makeElement("div", "empty-result", "");
@@ -202,7 +225,7 @@ categorySelect.addEventListener("change", () => {
   keyword = searchInput.value.trim();
   renderSearch();
 });
-for (const select of [regionSelect, daysSelect, sortSelect]) {
+for (const select of [regionSelect, daysSelect, sortSelect, startDateInput, endDateInput]) {
   select.addEventListener("change", () => {
     keyword = searchInput.value.trim();
     renderSearch();
@@ -230,6 +253,8 @@ function openSearchWithType(type) {
   categorySelect.value = "";
   regionSelect.value = "";
   daysSelect.value = "";
+  startDateInput.value = "";
+  endDateInput.value = "";
   sortSelect.value = "default";
 
   const filterButton = document.querySelector(

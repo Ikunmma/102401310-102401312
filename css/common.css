@@ -222,6 +222,13 @@ button:focus-visible { outline: 3px solid var(--brand); outline-offset: 3px; }
 .search-extra-filters label { display: block; margin-bottom: 10px; font-size: 20px; font-weight: 600; }
 .search-extra-filters select { width: 100%; min-height: 60px; padding: 14px; border: 1px solid var(--line); border-radius: 12px; background: white; color: var(--ink); font: inherit; font-size: 18px; }
 .search-extra-filters select:focus { outline: 2px solid var(--brand); outline-offset: 2px; }
+.search-date-range { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--line); }
+.search-date-range[hidden] { display: none; }
+.search-date-range label { display: block; margin-bottom: 10px; font-size: 20px; font-weight: 600; }
+.search-date-range input { width: 100%; min-height: 60px; padding: 14px; border: 1px solid var(--line); border-radius: 12px; background: white; color: var(--ink); font: inherit; font-size: 18px; }
+.search-date-range input:focus { outline: 2px solid var(--brand); outline-offset: 2px; }
+.search-date-range .field-error { grid-column: 1 / -1; margin: 0; }
+@media (max-width: 520px) { .search-date-range { grid-template-columns: 1fr; } }
 @media (max-width: 900px) { .search-extra-filters { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 520px) { .search-extra-filters { grid-template-columns: 1fr; } }
 .empty-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 14px; margin-top: 24px; }

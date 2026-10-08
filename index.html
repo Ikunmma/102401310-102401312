@@ -110,11 +110,16 @@
                 <option value="">全部地点</option><option value="teaching">教学区（含实验楼）</option><option value="library">图书馆</option><option value="canteen">食堂</option><option value="dorm">宿舍区</option><option value="sports">操场</option><option value="other">其他区域</option>
               </select></div>
               <div><label for="search-days">时间范围</label><select id="search-days">
-                <option value="">不限时间</option><option value="7">最近7天</option><option value="30">最近30天</option>
+                <option value="">不限时间</option><option value="7">最近7天</option><option value="30">最近30天</option><option value="custom">自定义日期</option>
               </select></div>
               <div><label for="search-sort">排序方式</label><select id="search-sort">
                 <option value="default">默认排序</option><option value="published">发布时间</option><option value="views">浏览次数</option>
               </select></div>
+            </div>
+            <div id="search-date-range" class="search-date-range" hidden>
+              <div><label for="search-start-date">开始日期</label><input id="search-start-date" type="date" aria-describedby="search-date-error"></div>
+              <div><label for="search-end-date">结束日期</label><input id="search-end-date" type="date" aria-describedby="search-date-error"></div>
+              <p id="search-date-error" class="field-error" role="alert" hidden></p>
             </div>
           </form>
 
