@@ -1,9 +1,9 @@
 /* 发布页参考主题；保留所有原表单字段、校验、草稿和照片交互。 */
 .app:has(#publish-view:not([hidden]))::after {
-  background: url('../assets/publish-plant-right.png') right bottom / 52px 125px no-repeat,
-    url('../assets/publish-plant-left.png') left bottom / 34px 115px no-repeat,
+  background: url('../assets/publish-plant-right.png') right bottom / var(--right-plant-size) no-repeat,
+    url('../assets/publish-plant-left.png') left bottom / var(--left-plant-size) no-repeat,
     url('../assets/publish-grass.png') 34px bottom / 160px 32px no-repeat,
-    url('../assets/search-plant-top.png') right 76px / 44px 90px no-repeat;
+    url('../assets/reference-plant-top.png') right 83px / var(--top-plant-size) no-repeat;
 }
 #publish-view .publish-content { width: calc(100% - 86px); max-width: 1100px; margin: 0 auto 0 34px; padding: 6px 0 34px; }
 #publish-back { min-height: 24px; margin: 0 0 14px; padding: 0; background: transparent; color: #536d59; font-size: 13px; }
@@ -56,5 +56,5 @@
   #publish-view .publish-actions { width: 100%; }
   #publish-view .publish-actions > button { flex: 1; }
   #publish-view .publish-note { flex-basis: 100%; }
-  .app:has(#publish-view:not([hidden]))::after { background-size: 31px 75px,20px 69px,96px 19px,32px 65px; }
+  .app:has(#publish-view:not([hidden]))::after { background-size: var(--right-plant-size),var(--left-plant-size),96px 19px,var(--top-plant-size); }
 }

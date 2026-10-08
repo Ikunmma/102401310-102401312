@@ -1,8 +1,8 @@
 /* 搜索页参考图主题：仅调整展示，所有筛选、历史和日期校验沿用原逻辑。 */
 .app:has(#search-view:not([hidden]))::after {
-  background: url('../assets/search-plant-right.png') right bottom / 233px 158px no-repeat,
-    url('../assets/search-plant-left.png') left bottom / 54px 143px no-repeat,
-    url('../assets/search-plant-top.png') right 90px / 64px 130px no-repeat;
+  background: url('../assets/search-plant-right.png') right bottom / var(--right-plant-size) no-repeat,
+    url('../assets/search-plant-left.png') left bottom / var(--left-plant-size) no-repeat,
+    url('../assets/reference-plant-top.png') right 83px / var(--top-plant-size) no-repeat;
 }
 #search-view .search-content { width: calc(100% - 132px); max-width: 1100px; margin: 0 auto 0 54px; padding: 8px 0 10px; }
 #search-back { min-height: 26px; margin: 0 0 18px; padding: 0; color: #536d59; font-size: 15px; background: transparent; }
@@ -46,7 +46,7 @@
   #search-results { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px; }
   #search-view .search-intro { padding: 24px; }
   #search-view .search-intro h1 { font-size: 27px; }
-  .app:has(#search-view:not([hidden]))::after { background-size: 117px 79px,27px 72px,32px 65px; }
+  .app:has(#search-view:not([hidden]))::after { background-size: var(--right-plant-size),var(--left-plant-size),var(--top-plant-size); }
 }
 @media (max-width: 480px) {
   #search-results { grid-template-columns: 1fr; }
