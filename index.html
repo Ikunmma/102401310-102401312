@@ -11,6 +11,7 @@
   <script src="js/home.js" defer></script>
   <script src="js/search.js" defer></script>
   <script src="js/publish.js" defer></script>
+  <script src="js/similar.js" defer></script>
   <script src="js/detail.js" defer></script>
   <script src="js/mine.js" defer></script>
   <script src="js/app.js" defer></script>
@@ -136,6 +137,10 @@
                 <label><input type="radio" name="publish-type" value="found"><span>失物招领</span></label>
               </div>
             </fieldset>
+            <section id="similar-panel" class="similar-panel" aria-label="相似信息提醒" hidden>
+              <h3>可能相关的信息</h3>
+              <div id="similar-list" class="similar-list"></div>
+            </section>
             <div class="publish-fields">
               <h3 class="publish-group-heading">物品信息</h3>
               <div class="publish-field">

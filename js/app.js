@@ -9,6 +9,7 @@ let previousView = "home";
 let currentView = "home";
 
 function showView(view) {
+  if (view === "publish") renderSimilarItems();
   if (currentView === "publish") savePublishDraft();
   currentView = view;
   for (const name of ["home", "search", "detail", "publish", "publish-success", "mine"]) {

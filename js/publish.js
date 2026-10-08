@@ -177,9 +177,11 @@ function setPublishType(type) {
   });
   document.getElementById("publish-time-label").textContent = type === "lost" ? "丢失时间" : "拾取时间";
   document.getElementById("publish-location-label").textContent = type === "lost" ? "丢失地点" : "拾取地点";
+  renderSimilarItems();
 }
 
 function setEditMode(editing) {
+  renderSimilarItems();
   document.getElementById("clear-publish-draft").hidden = editing;
   updateContactInput();
   document.getElementById("publish-heading").textContent = editing ? "编辑发布信息" : "发布信息";
