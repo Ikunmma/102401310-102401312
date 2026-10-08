@@ -79,6 +79,7 @@
           <button id="search-back" class="detail-back" type="button">‹ 返回首页</button>
           <header class="search-intro">
             <h1>搜索失物招领</h1>
+            <img class="search-emblem" src="assets/reference-emblem.png" alt="福州大学校徽">
           </header>
 
           <form id="search-form" class="search-panel">
@@ -128,12 +129,16 @@
             <p id="search-summary" class="search-summary" aria-live="polite"></p>
           </div>
           <div id="search-results" class="item-list"></div>
+          <p class="page-note">初始卡片为演示信息。校徽仅作校园主题展示，不代表官方认证。</p>
         </main>
       </section>
       <section id="publish-view" hidden>
         <main class="content publish-content">
           <button id="publish-back" class="detail-back" type="button">‹ 返回首页</button>
-          <header class="publish-intro"><h2 id="publish-heading">发布信息</h2></header>
+          <header class="publish-intro">
+            <h2 id="publish-heading">发布信息</h2>
+            <img class="publish-emblem" src="assets/reference-emblem.png" alt="福州大学校徽">
+          </header>
           <form id="publish-form" class="publish-form" novalidate>
             <fieldset class="publish-type">
               <legend>发布类型</legend>
@@ -290,6 +295,7 @@
       <div class="nav-brand" aria-label="拾光校园">
         <span class="brand-mark">拾</span>
         <span class="brand-name">拾光校园</span>
+        <img class="nav-emblem" src="assets/reference-emblem.png" alt="福州大学校徽">
       </div>
       <button id="home-nav" class="nav-item active" type="button" aria-current="page">
         <span class="nav-icon">⌂</span><span>首页</span>
@@ -303,6 +309,11 @@
       <button id="mine-nav" class="nav-item" type="button">
         <span class="nav-icon">○</span><span>我的</span>
       </button>
+      <form id="nav-search-form" class="nav-search" role="search">
+        <label class="visually-hidden" for="nav-search-input">搜索物品关键词</label>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7.5"/><path d="m16 16 5 5"/></svg>
+        <input id="nav-search-input" type="search" placeholder="输入物品关键词..." autocomplete="off">
+      </form>
     </nav>
   </div>
 

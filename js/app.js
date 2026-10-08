@@ -34,6 +34,14 @@ publishNav.addEventListener("click", () => {
 });
 mineNav.addEventListener("click", openMine);
 
+// 顶部搜索框复用原搜索表单及筛选逻辑。
+document.getElementById("nav-search-form").addEventListener("submit", event => {
+  event.preventDefault();
+  openSearchWithType("all");
+  searchInput.value = document.getElementById("nav-search-input").value;
+  document.getElementById("search-form").requestSubmit();
+});
+
 document.addEventListener("shiguang:datachange", () => { renderHome(); renderSearch(); renderMine(); });
 
 renderHome();

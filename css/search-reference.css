@@ -1,0 +1,62 @@
+/* 搜索页参考图主题：仅调整展示，所有筛选、历史和日期校验沿用原逻辑。 */
+.app:has(#search-view:not([hidden]))::after {
+  background: url('../assets/search-plant-right.png') right bottom / var(--right-plant-size) no-repeat,
+    url('../assets/search-plant-left.png') left bottom / var(--left-plant-size) no-repeat,
+    url('../assets/reference-plant-top.png') right 83px / var(--top-plant-size) no-repeat;
+}
+#search-view .search-content { width: calc(100% - 132px); max-width: 1100px; margin: 0 auto 0 54px; padding: 8px 0 10px; }
+#search-back { min-height: 26px; margin: 0 0 18px; padding: 0; color: #536d59; font-size: 15px; background: transparent; }
+#search-view .search-intro { position: relative; min-height: 146px; margin: 0 0 18px; padding: 28px 30px; border-radius: 20px; overflow: hidden; background: linear-gradient(90deg,rgba(8,48,42,.79),rgba(8,48,42,.38) 48%,rgba(8,48,42,.1)),url('../assets/search-sunset.png') center 28% / cover no-repeat; box-shadow: 0 0 20px #ffffff90; }
+#search-view .search-intro h1 { margin: 0; color: #fffdf2; font-size: 32px; line-height: 1.4; text-shadow: 0 2px 4px #14382e80; }
+.search-emblem { position: absolute; width: 60px; height: 60px; top: 14px; right: 18px; border-radius: 50%; box-shadow: 0 0 8px #fff8; }
+#search-view .search-panel { padding: 16px 18px 18px; margin: 0 0 28px; border: 2px solid #ffffffb0; border-radius: 18px; background: #fffffff2; box-shadow: 0 8px 12px #7daea840; }
+#search-view .search-row { gap: 10px; }
+#search-view .search-row input { min-height: 46px; padding: 10px 14px; border: 1px solid #fffdf0; border-radius: 12px; background: linear-gradient(110deg,#fffdf5,#faf5e2); color: #282b22; font-size: 17px; line-height: 1.4; box-shadow: 0 6px 9px #8d7b4930,inset 0 1px 4px #fff; }
+#search-view .search-row > button { min-height: 46px; padding: 0 22px; border: 1px solid #c5dfc8; border-radius: 11px; font-size: 17px; line-height: 1.4; background: linear-gradient(135deg,#6f9a7a,#3f826e); box-shadow: 0 4px 8px #3c72513b,inset 0 0 7px #cee9b552; }
+#search-view .filter-row { margin-top: 11px; padding-top: 12px; border-color: #edf0e5; }
+#search-view .type-filters { gap: 8px; }
+#search-view .type-filters button { min-height: 40px; padding: 6px 16px; border-radius: 11px; border: 1px solid transparent; background: #e2e3de; color: #92958a; font-size: 16px; line-height: 1.5; font-weight: 500; }
+#search-view .type-filters button.is-active { border-color: #91b3a0; background: linear-gradient(130deg,#e3f5e7,#d2eee1); color: #286b53; box-shadow: inset 0 1px 3px #fff8; }
+#search-view .type-filters button:hover { border-color: #91b3a0; color: #286b53; }
+#search-view .search-extra-filters { grid-template-columns: repeat(4,minmax(0,1fr)); gap: 13px; margin-top: 17px; }
+#search-view .search-extra-filters label { margin-bottom: 6px; font-size: 17px; line-height: 1.5; color: #302b20; }
+#search-view .search-extra-filters select, #search-view .search-date-range input { min-height: 46px; padding: 10px 12px; border: 1px solid #f6f6ed; border-radius: 12px; background: linear-gradient(120deg,#fffdf6,#f7f8f1); color: #393c30; font-size: 15px; box-shadow: 0 5px 7px #726d4730,inset 0 1px 3px #fff; }
+#search-view .search-date-range label { font-size: 16px; margin-bottom: 6px; }
+#search-view .search-results-heading { margin-bottom: 18px; align-items: center; }
+#search-view .search-results-heading h2 { position: relative; isolation: isolate; font-size: 25px; line-height: 1.4; color: #292316; }
+#search-view .search-results-heading h2::after { content: ''; position: absolute; z-index: -1; width: 186px; height: 12px; bottom: 0; left: -9px; border-radius: 8px; background: #c0dfce; }
+#search-view .search-summary { font-size: 14px; color: #90988e; }
+#search-results { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 20px; align-items: start; }
+#search-results .item-card { min-height: 311px; padding: 16px; border: 2px solid #fffdf5b0; border-radius: 18px; background: linear-gradient(130deg,#f6fcfa,#deeff0); box-shadow: 0 8px 11px #667f7630; }
+#search-results .item-card:has(.card-type.lost) { background: linear-gradient(130deg,#fffcf1,#fbefbd); }
+#search-results .card-photo { height: auto; aspect-ratio: 246 / 138; margin-bottom: 16px; border-radius: 11px; }
+#search-results .card-type { padding: 5px 9px; font-size: 13px; font-weight: 500; background: #cbeae6; color: #24564c; }
+#search-results .card-type.lost { background: #f7e2ae; color: #89652d; }
+#search-results .card-name { margin: 13px 0 8px; font-size: 19px; line-height: 1.5; color: #221f15; }
+#search-results .card-meta { margin-top: auto; border: 0; padding: 0; font-size: 13px; line-height: 1.6; color: #494431; }
+#search-results .card-views { margin-top: 7px; font-size: 13px; line-height: 1.5; color: #8e937c; }
+#search-results .card-views svg { width: 15px; height: 15px; }
+#search-view .page-note { margin: 15px 0 0; font-size: 12px; color: #93998f; }
+#search-view .search-history { border-color: #e2e9dc; background: #fffef7; }
+
+
+@media (max-width: 767px) {
+  #search-view .search-content { width: calc(100% - 40px); margin: 0 20px; padding-top: 8px; }
+  #search-view .search-extra-filters { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  #search-results { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px; }
+  #search-view .search-intro { padding: 24px; }
+  #search-view .search-intro h1 { font-size: 27px; }
+  .app:has(#search-view:not([hidden]))::after { background-size: var(--right-plant-size),var(--left-plant-size),var(--top-plant-size); }
+}
+@media (max-width: 480px) {
+  #search-results { grid-template-columns: 1fr; }
+  #search-view .search-panel { padding: 14px; }
+  #search-view .search-extra-filters { gap: 16px 10px; }
+  #search-view .search-extra-filters label { font-size: 15px; }
+  #search-view .search-row > button { padding: 0 14px; }
+  #search-view .search-row input { font-size: 15px; }
+  #search-view .search-results-heading { flex-wrap: wrap; gap: 8px; }
+  #search-view .search-results-heading h2 { font-size: 23px; }
+  #search-view .search-summary { font-size: 13px; }
+  .search-emblem { width: 46px; height: 46px; top: 10px; right: 12px; }
+}
