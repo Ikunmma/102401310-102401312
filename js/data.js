@@ -129,7 +129,27 @@ function createItem(values, type) {
   return item;
 }
 
+let searchHistory = [];
+try {
+  const saved = JSON.parse(localStorage.getItem("shiguang_search_history_v1") || "[]");
+  if (Array.isArray(saved)) searchHistory = [...new Set(saved.filter(value => typeof value === "string" && value.trim()).map(value => value.trim()))].slice(0, 10);
+} catch { /* 无历史记录时显示空状态 */ }
+
+function writeSearchHistory(values) {
+  searchHistory = [...values];
+  try { localStorage.setItem("shiguang_search_history_v1", JSON.stringify(searchHistory)); }
+  catch { /* 存储不可用时仍保留本次页面内的搜索历史 */ }
+}
+
 window.ShiguangData = {
+  getSearchHistory: () => [...searchHistory],
+  addSearchHistory(value) {
+    const text = String(value || "").trim();
+    if (!text) return;
+    writeSearchHistory([text, ...searchHistory.filter(entry => entry.toLocaleLowerCase() !== text.toLocaleLowerCase())].slice(0, 10));
+  },
+  removeSearchHistory(value) { writeSearchHistory(searchHistory.filter(entry => entry !== value)); },
+  clearSearchHistory() { writeSearchHistory([]); },
   readPublishDraft, writePublishDraft,
   getItems: () => items.map(item => ({ ...item, images: [...itemPhotos(item)] })),
   getOwnerId: () => localStorage.getItem(OWNER_KEY),

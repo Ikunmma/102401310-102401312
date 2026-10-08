@@ -83,8 +83,14 @@
           <form id="search-form" class="search-panel">
             <label class="visually-hidden" for="search-input">搜索物品</label>
             <div class="search-row">
+              <div class="search-input-wrap">
               <input id="search-input" type="search"
-                     placeholder="搜索校园卡、雨伞、图书馆……">
+                     autocomplete="off" aria-controls="search-history" aria-expanded="false" placeholder="搜索校园卡、雨伞、图书馆……">
+            <section id="search-history" class="search-history" aria-label="搜索历史" hidden>
+              <div class="search-history-heading"><h3>搜索历史</h3><button id="clear-search-history" type="button">清空记录</button></div>
+              <div id="search-history-list" class="search-history-list"></div>
+            </section>
+              </div>
               <button type="submit">搜索</button>
             </div>
             <div class="filter-row">

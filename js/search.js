@@ -94,7 +94,66 @@ function refreshCategoryOptions() {
 let keyword = "";
 let selectedType = "all";
 let selectedCategory = "";
+let historyOpen = false;
+function closeSearchHistory() {
+  historyOpen = false;
+  document.getElementById("search-history").hidden = true;
+  searchInput.setAttribute("aria-expanded", "false");
+}
+function openSearchHistory() {
+  historyOpen = true;
+  renderSearchHistory();
+}
+searchInput.addEventListener("focus", openSearchHistory);
+searchInput.addEventListener("click", openSearchHistory);
+searchInput.addEventListener("keydown", event => {
+  if (event.key === "Escape") closeSearchHistory();
+  if (event.key === "ArrowDown") {
+    openSearchHistory();
+    const first = document.querySelector(".history-keyword");
+    if (first) { event.preventDefault(); first.focus(); }
+  }
+});
+document.addEventListener("click", event => {
+  if (!event.target.closest(".search-input-wrap")) closeSearchHistory();
+});
+document.querySelector(".search-input-wrap").addEventListener("focusout", event => {
+  if (!event.currentTarget.contains(event.relatedTarget)) closeSearchHistory();
+});
+function renderSearchHistory() {
+  const history = ShiguangData.getSearchHistory();
+  document.getElementById("search-history").hidden = !historyOpen || !history.length;
+  searchInput.setAttribute("aria-expanded", String(historyOpen && history.length > 0));
+  document.getElementById("search-history-list").replaceChildren(...history.map(text => {
+    const entry = makeElement("span", "history-entry", "");
+    const button = makeElement("button", "history-keyword", text);
+    button.type = "button";
+    button.addEventListener("click", () => {
+      searchInput.value = text;
+      keyword = text;
+      rememberSearch(text);
+      renderSearch();
+      closeSearchHistory();
+    });
+    const remove = makeElement("button", "history-remove", "×");
+    remove.type = "button";
+    remove.setAttribute("aria-label", `删除搜索记录：${text}`);
+    remove.addEventListener("click", () => { ShiguangData.removeSearchHistory(text); renderSearchHistory(); });
+    entry.append(button, remove);
+    return entry;
+  }));
+}
 
+function rememberSearch(text) {
+  ShiguangData.addSearchHistory(text);
+  renderSearchHistory();
+}
+
+document.getElementById("clear-search-history").addEventListener("click", () => {
+  ShiguangData.clearSearchHistory();
+  renderSearchHistory();
+});
+renderSearchHistory();
 function renderSearch() {
   refreshCategoryOptions();
   const results = sortSearchItems(filterItems(ShiguangData.getItems(), keyword, selectedType, selectedCategory,
@@ -133,6 +192,8 @@ function renderSearch() {
 document.getElementById("search-form").addEventListener("submit", event => {
   event.preventDefault();
   keyword = searchInput.value.trim();
+  rememberSearch(keyword);
+  closeSearchHistory();
   renderSearch();
 });
 
