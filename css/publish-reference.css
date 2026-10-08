@@ -1,0 +1,72 @@
+/* 发布页参考主题；保留所有原表单字段、校验、草稿和照片交互。 */
+.app:has(#publish-view:not([hidden]))::after {
+  background: url('../assets/publish-plant-right.png') right bottom / 52px 125px no-repeat,
+    url('../assets/publish-plant-left.png') left bottom / 34px 115px no-repeat,
+    url('../assets/publish-grass.png') 34px bottom / 160px 32px no-repeat,
+    url('../assets/search-plant-top.png') right 76px / 44px 90px no-repeat;
+}
+#publish-view .publish-content { width: calc(100% - 86px); max-width: 1100px; margin: 0 auto 0 34px; padding: 6px 0 34px; }
+#publish-back { min-height: 24px; margin: 0 0 14px; padding: 0; background: transparent; color: #536d59; font-size: 13px; }
+#publish-view .publish-intro { position: relative; min-height: 118px; margin: 0 0 16px; padding: 24px; border-radius: 18px; overflow: hidden; color: white; background: linear-gradient(90deg,rgba(20,52,36,.22),transparent 60%),url('../assets/search-sunset.png') center 28% / cover no-repeat; box-shadow: 0 0 18px #ffffffa0; }
+#publish-view .publish-intro h2 { margin: 0; font-size: 28px; line-height: 1.4; text-shadow: 0 2px 4px #253528; }
+.publish-emblem { position: absolute; top: 12px; right: 18px; width: 46px; height: 46px; border-radius: 50%; box-shadow: 0 0 6px #fff9; }
+#publish-view .publish-form { padding: 18px 22px; border: 2px solid #ffffffb0; border-radius: 18px; background: linear-gradient(125deg,#fffffff7 40%,#fffbedee); box-shadow: 0 7px 13px #789c8830; }
+#publish-view .publish-type { padding: 0 0 18px 86px; margin: 0 0 16px; border-bottom: 1px solid #e9ebe3; }
+#publish-view .publish-type legend { top: 9px; font-size: 14px; color: #332c21; }
+#publish-view .publish-types { padding: 3px; gap: 4px; border-radius: 8px; background: #eeefef; }
+#publish-view .publish-types label { min-width: 104px; }
+#publish-view .publish-types span { padding: 7px 16px; border-radius: 7px; font-size: 14px; line-height: 1.5; color: #858984; }
+#publish-view .publish-types input:checked + span { background: #fff; color: #286b58; border-color: #e1e9e2; box-shadow: 0 3px 5px #426b5c38; }
+#publish-view .publish-fields { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px 18px; }
+#publish-view .publish-group-heading { margin: 0; font-size: 17px; line-height: 24px; color: #332b21; }
+#publish-view .publish-group-heading::before { width: 3px; height: 14px; margin-right: 9px; vertical-align: -1px; background: #337c66; }
+#publish-view .contact-group-heading { border-color: #e9ebe3; margin-top: 4px; padding-top: 18px; }
+#publish-view .publish-field { min-width: 0; }
+#publish-view .publish-field > label { margin-bottom: 5px; font-size: 14px; line-height: 20px; font-weight: 600; color: #332c23; }
+#publish-view .publish-field > label > span:last-child { color: #b78571; }
+#publish-view .publish-field input, #publish-view .publish-field select, #publish-view .publish-field textarea { width: 100%; min-width: 0; min-height: 38px; padding: 8px 12px; border: 1px solid #fffdf4; border-radius: 10px; background: linear-gradient(110deg,#fffdf7,#faf9f3); color: #3c372c; font-size: 14px; line-height: 20px; box-shadow: 0 4px 7px #967d4b30,inset 0 1px 3px #fff; }
+#publish-view .publish-field textarea { min-height: 76px; }
+#publish-view .publish-field input::placeholder, #publish-view .publish-field textarea::placeholder { color: #726b5d; opacity: 1; }
+#publish-view .publish-field [aria-invalid="true"] { border-color: #c7463e; }
+#publish-view .photo-upload { width: 112px; min-height: 40px; margin: 0; padding: 8px; border: 1px dashed #a5bfb2; border-radius: 7px; background: #edf5f0; color: #286b58; font-size: 14px; }
+#publish-view .photo-previews { gap: 12px; }
+#publish-view .photo-preview img { height: 120px; }
+#publish-view .photo-remove { font-size: 13px; padding: 5px 8px; }
+#publish-view .publish-footer { gap: 14px; margin-top: 16px; padding-top: 14px; border-color: #e9ebe3; }
+#publish-view .publish-note { min-width: 220px; margin: 0; padding: 0; border-radius: 0; background: transparent; color: #96978b; font-size: 12px; line-height: 1.7; }
+#publish-view .publish-actions { gap: 9px; }
+#publish-view .publish-actions .contact-button, #publish-view .publish-actions .secondary-button { min-width: 92px; min-height: 38px; margin: 0; padding: 8px 14px; border-radius: 9px; font-size: 14px; line-height: 20px; }
+#publish-view .publish-actions .contact-button { border: 1px solid #448872; background: linear-gradient(135deg,#7aab85,#2e7d65); box-shadow: 0 3px 6px #4c806343,inset 0 0 5px #cce0af70; }
+#publish-view .publish-actions .secondary-button { border: 1px solid #dedfd8; background: #e3e4de; color: #3c352b; }
+#publish-view .similar-panel { margin-bottom: 18px; padding: 14px; }
+#publish-view .similar-panel h3 { font-size: 17px; }
+#publish-view .similar-title strong { font-size: 15px; }
+#publish-view .similar-meta, #publish-view .similar-link { font-size: 13px; }
+@media (min-width: 700px) {
+  .app:has(#publish-view:not([hidden])) .bottom-nav { width: calc(100% - 86px); max-width: 1100px; margin: 0 auto 0 34px; height: 64px; padding: 0; }
+  .app:has(#publish-view:not([hidden])) .brand-mark { width: 29px; height: 29px; border-radius: 8px; font-size: 20px; }
+  .app:has(#publish-view:not([hidden])) .brand-name { font-size: 21px; }
+  .app:has(#publish-view:not([hidden])) .nav-emblem { width: 32px; height: 32px; margin-left: 0; padding-left: 7px; }
+  .app:has(#publish-view:not([hidden])) .nav-item { min-width: 47px; height: 48px; padding: 0 6px; font-size: 15px; }
+  .app:has(#publish-view:not([hidden])) .nav-item.active::after { bottom: 12px; width: 20px; left: calc(50% - 10px); height: 2px; }
+  .app:has(#publish-view:not([hidden])) .nav-search { width: 138px; height: 28px; margin-left: 12px; padding: 0 8px; gap: 5px; }
+  .app:has(#publish-view:not([hidden])) .nav-search input { font-size: 11px; }
+  .app:has(#publish-view:not([hidden])) .nav-search svg { width: 14px; height: 14px; }
+}
+@media (min-width: 1186px) {
+  #publish-view .publish-content, .app:has(#publish-view:not([hidden])) .bottom-nav { margin-left: auto; margin-right: auto; }
+}
+@media (max-width: 699px) {
+  #publish-view .publish-content { width: calc(100% - 40px); margin: 0 20px; padding-top: 8px; }
+  #publish-view .publish-form { padding: 18px 16px; }
+  #publish-view .publish-type { padding: 0 0 18px; }
+  #publish-view .publish-type legend { position: static; float: none; margin-bottom: 10px; }
+  #publish-view .publish-types { width: 100%; }
+  #publish-view .publish-types label { min-width: 0; flex: 1; }
+  #publish-view .publish-fields { grid-template-columns: 1fr; gap: 16px; }
+  #publish-view .publish-field input, #publish-view .publish-field select { min-height: 44px; }
+  #publish-view .publish-actions { width: 100%; }
+  #publish-view .publish-actions > button { flex: 1; }
+  #publish-view .publish-note { flex-basis: 100%; }
+  .app:has(#publish-view:not([hidden]))::after { background-size: 31px 75px,20px 69px,96px 19px,32px 65px; }
+}
