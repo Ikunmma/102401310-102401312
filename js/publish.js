@@ -13,6 +13,41 @@ let publishDraft = null;
 let publishImages = [];
 let photosBusy = false;
 let draftTimer;
+function contactValidationMessage(method, value) {
+  const text = String(value || "").trim();
+  if (!text) return "请填写联系方式";
+  if (method === "电话" && !/^(?:\+?86[ -]?)?1\d{10}$/.test(text) &&
+    !/^0\d{2,3}[- ]?\d{7,8}(?:[-转]\d{1,6})?$/.test(text)) {
+    return "请填写11位手机号，或带区号的固定电话，如0591-12345678";
+  }
+  if (method === "邮箱" && !/^[^\s@]+@[^\s@.]+(?:\.[^\s@.]+)+$/.test(text)) return "请填写完整邮箱，如name@example.com";
+  if (method === "QQ" && !/^[1-9]\d{4,11}$/.test(text)) return "请填写5至12位数字QQ号，首位不能为0";
+  if (method === "微信" && !/^[A-Za-z][A-Za-z0-9_-]*$/.test(text)) return "请填写微信号（字母开头，可含数字、下划线和短横线），不是微信昵称";
+  return "";
+}
+
+function updateContactInput() {
+  const method = document.getElementById("publish-contactMethod").value;
+  const input = document.getElementById("publish-contact");
+  const hints = {
+    "电话": ["如：13800138000 或 0591-12345678", "tel", "tel"],
+    "邮箱": ["如：name@example.com", "email", "email"],
+    "QQ": ["请输入数字QQ号", "text", "numeric"],
+    "微信": ["请输入微信号，不是微信昵称", "text", "text"],
+    "其他": ["如：图书馆一楼服务台", "text", "text"]
+  };
+  const [placeholder, type, inputMode] = hints[method] || ["请先选择联系渠道", "text", "text"];
+  input.type = type;
+  input.inputMode = inputMode;
+  input.placeholder = placeholder;
+  setFieldError("contact", "");
+}
+
+document.getElementById("publish-contactMethod").addEventListener("change", updateContactInput);
+document.getElementById("publish-contact").addEventListener("blur", () => {
+  const value = document.getElementById("publish-contact").value;
+  if (value.trim()) setFieldError("contact", contactValidationMessage(document.getElementById("publish-contactMethod").value, value));
+});
 const draftFeedback = makeElement("p", "mine-feedback", "");
 draftFeedback.hidden = true;
 draftFeedback.setAttribute("role", "status");
@@ -48,6 +83,7 @@ function restorePublishDraft() {
     input.value = input.maxLength > 0 ? value.slice(0, input.maxLength) : value;
   }
   publishImages = itemPhotos(draft);
+  updateContactInput();
   setPublishType(draft.type === "found" ? "found" : "lost");
   renderPhotoPreviews();
 }
@@ -144,6 +180,8 @@ function setPublishType(type) {
 }
 
 function setEditMode(editing) {
+  document.getElementById("clear-publish-draft").hidden = editing;
+  updateContactInput();
   document.getElementById("publish-heading").textContent = editing ? "编辑发布信息" : "发布信息";
   document.getElementById("publish-submit").textContent = editing ? "保存修改" : "发布信息";
   document.getElementById("publish-back").textContent = editing ? "‹ 返回我的发布" : "‹ 返回首页";
@@ -229,7 +267,8 @@ publishForm.addEventListener("submit", event => {
     values[name] = input.value.trim();
     const message = !values[name] ? `请填写${label}` :
       name === "eventTime" && !input.validity.valid ? "请选择有效的日期和时间" :
-      input.maxLength > 0 && values[name].length > input.maxLength ? `${label}最多填写${input.maxLength}个字符` : "";
+      input.maxLength > 0 && values[name].length > input.maxLength ? `${label}最多填写${input.maxLength}个字符` :
+      name === "contact" ? contactValidationMessage(values.contactMethod, values.contact) : "";
     setFieldError(name, message);
     if (message && !firstInvalid) firstInvalid = input;
   }
@@ -267,6 +306,7 @@ publishForm.addEventListener("submit", event => {
   renderPhotoPreviews();
   document.getElementById("photo-feedback").hidden = true;
   setPublishType("lost");
+  updateContactInput();
   savePublishDraft();
   showView("publish-success");
 });
@@ -275,5 +315,29 @@ document.getElementById("publish-back").addEventListener("click", () => {
   else showView("home");
 });
 document.getElementById("edit-cancel").addEventListener("click", () => { leaveEdit(); openMine(); });
+
+function clearPublishDraft() {
+  if (editingId || photosBusy) return;
+  if (!window.confirm("确定清除草稿吗？填写的内容和照片将被清空，无法恢复。")) return;
+  clearTimeout(draftTimer);
+  try {
+    ShiguangData.writePublishDraft(null);
+  } catch {
+    draftFeedback.textContent = "草稿清除失败，填写内容已保留，请检查本地存储后重试。";
+    draftFeedback.hidden = false;
+    return;
+  }
+  publishForm.reset();
+  publishImages = [];
+  publishDraft = null;
+  setPublishType("lost");
+  setEditMode(false);
+  renderPhotoPreviews();
+  document.getElementById("photo-feedback").hidden = true;
+  draftFeedback.hidden = true;
+  document.getElementById("publish-name").focus();
+}
+
+document.getElementById("clear-publish-draft").addEventListener("click", clearPublishDraft);
 document.getElementById("success-home").addEventListener("click", () => showView("home"));
 document.getElementById("success-mine").addEventListener("click", () => openMine());
