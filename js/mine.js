@@ -72,10 +72,32 @@ function renderMine() {
     action.type = "button";
     action.setAttribute("aria-label", `${action.textContent}：${item.name || "未命名物品"}`);
     action.addEventListener("click", () => resolveItem(item.id, resolved ? "active" : "resolved"));
-    actions.append(edit, action);
+    const remove = makeElement("button", "delete-button", "删除");
+    remove.type = "button";
+    remove.setAttribute("aria-label", `删除信息：${item.name || "未命名物品"}`);
+    remove.addEventListener("click", () => deleteMyItem(item.id));
+    actions.append(edit, action, remove);
     entry.append(actions);
     return entry;
   }));
+}
+
+function deleteMyItem(id) {
+  let record;
+  try { record = ShiguangData.readOwnedRecord(id).record; }
+  catch {
+    showMineFeedback("无法读取你的发布记录，请刷新页面后重试。", true);
+    return;
+  }
+  if (!window.confirm(`确定删除“${record.name || "未命名物品"}”吗？删除后无法恢复。`)) return;
+  try {
+    ShiguangData.deleteItem(id);
+  } catch {
+    showMineFeedback("删除失败，原记录已保留，请检查本地存储后重试。", true);
+    return;
+  }
+  if (editingId === id) leaveEdit();
+  showMineFeedback(`已删除“${record.name || "未命名物品"}”。`);
 }
 
 function resolveItem(id, status = "resolved") {

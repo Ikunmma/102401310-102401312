@@ -103,6 +103,19 @@ function notifyItemsChanged() {
   document.dispatchEvent(new CustomEvent("shiguang:datachange"));
 }
 
+function deleteOwnedRecord(id) {
+  const { saved, record } = readOwnedRecord(id);
+  // 先保存成功，再从页面数据移除；失败时原记录仍保留。
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(saved.filter(item => item !== record)));
+  const index = items.findIndex(item => item.id === id && item.ownerId === record.ownerId);
+  if (index !== -1) items.splice(index, 1);
+  viewCounts.delete(id);
+  try { localStorage.setItem(VIEWS_KEY, JSON.stringify([...viewCounts])); }
+  catch { /* 浏览统计清理失败不影响已经成功删除的发布记录 */ }
+  notifyItemsChanged();
+  return record;
+}
+
 function createItem(values, type) {
   let ownerId = localStorage.getItem(OWNER_KEY);
   if (!ownerId) {
@@ -120,7 +133,7 @@ window.ShiguangData = {
   readPublishDraft, writePublishDraft,
   getItems: () => items.map(item => ({ ...item, images: [...itemPhotos(item)] })),
   getOwnerId: () => localStorage.getItem(OWNER_KEY),
-  readOwnedRecord, createItem, updateItem: updateOwnedRecord,
+  readOwnedRecord, createItem, updateItem: updateOwnedRecord, deleteItem: deleteOwnedRecord,
   updateStatus(id, status) {
     if (!["active", "resolved"].includes(status)) throw new Error("无效状态");
     return updateOwnedRecord(id, { status });

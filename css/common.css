@@ -93,8 +93,15 @@ body { background: var(--bg); font-size: 18px; line-height: 1.6; }
 .mine-filters { gap: 12px; margin: 0 0 32px; }
 .mine-filters button span { font-size: 16px; min-width: 28px; }
 .mine-heading h3 { font-size: 24px; }
-.mine-actions { gap: 12px; margin-top: 12px; }
+.mine-actions { grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr) minmax(0, .7fr); gap: 8px; margin-top: 12px; }
 .mine-actions .resolve-button, .mine-actions .edit-button { font-size: 18px; padding: 14px 10px; }
+.mine-actions .delete-button { min-height: 56px; padding: 14px 16px; border: 1px solid #edd3ce; border-radius: 12px; background: #fff8f6; color: #ad4c3d; font: inherit; font-size: 18px; cursor: pointer; }
+.mine-actions .delete-button:hover { border-color: #ad4c3d; background: #fcece7; }
+.mine-actions > button { min-width: 0; white-space: nowrap; }
+.mine-actions .delete-button { padding-left: 8px; padding-right: 8px; }
+@media (max-width: 430px) {
+  .mine-actions .edit-button, .mine-actions .resolve-button, .mine-actions .delete-button { font-size: 16px; padding-left: 4px; padding-right: 4px; }
+}
 .resolve-button { background: #e5f4f0; color: var(--brand); }
 .mine-empty { padding: 56px 24px; }
 .mine-feedback { font-size: 18px; padding: 18px 22px; }
